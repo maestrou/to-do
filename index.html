@@ -9,7 +9,7 @@
 <style>
   :root {
     --canvas: #F7F4ED; --surface: #FFFFFF; --surfaceLow: #FBF8F1; --surfaceMute: #F2EEE3;
-    --ink: #0A0E13; --muted: #7A7670; --faded: #B8B3A8;
+    --ink: #0A0E13; --muted: #5C5852; --faded: #A09B90;
     --hair: #E5DECC; --hairSoft: #EFE9D8;
     --amber: #B45309; --amberLight: #D97706; --amberMist: #FFFBEB; --amberHaze: #FEF3C7;
     --sage: #15803D; --sageLight: #16A34A; --sageMist: #F0FDF4; --sageHaze: #DCFCE7;
@@ -23,215 +23,239 @@
   }
   * { box-sizing: border-box; margin: 0; padding: 0; }
   html, body { height: 100%; }
-  body { font-family: var(--fd); background: var(--canvas); background-image: radial-gradient(circle at 1px 1px, var(--hairSoft) 1px, transparent 0); background-size: 22px 22px; color: var(--ink); padding: 10px; font-size: 11.5px; line-height: 1.4; min-height: 100vh; }
-  .wrap { width: 100%; max-width: 1500px; margin: 0 auto; }
+  body { font-family: var(--fd); background: var(--canvas); background-image: radial-gradient(circle at 1px 1px, var(--hairSoft) 1px, transparent 0); background-size: 24px 24px; color: var(--ink); padding: 14px; font-size: 14px; line-height: 1.55; min-height: 100vh; }
+  .wrap { width: 100%; max-width: 1700px; margin: 0 auto; }
 
-  .topbar { display: flex; align-items: center; gap: 10px; margin-bottom: 8px; padding: 6px 10px; background: var(--surface); border-radius: 9px; border: 1px solid var(--hair); border-left: 4px solid var(--navy); box-shadow: 0 1px 0 var(--hairSoft); flex-wrap: wrap; }
-  .tb-kicker { font-size: 8.5px; font-weight: 700; color: var(--gold); letter-spacing: 0.22em; text-transform: uppercase; }
-  .tb-title { font-size: 16px; font-weight: 800; color: var(--ink); letter-spacing: -0.025em; }
-  .tb-holiday { display: inline-flex; align-items: center; gap: 5px; font-size: 10px; font-weight: 700; color: var(--amber); padding: 3px 8px; background: var(--amberMist); border: 1px solid var(--amberHaze); border-radius: 99px; }
+  /* 상단바 */
+  .topbar { display: flex; align-items: center; gap: 14px; margin-bottom: 12px; padding: 12px 16px; background: var(--surface); border-radius: 12px; border: 1px solid var(--hair); border-left: 5px solid var(--navy); box-shadow: 0 2px 0 var(--hairSoft); flex-wrap: wrap; }
+  .tb-kicker { font-size: 11px; font-weight: 700; color: var(--gold); letter-spacing: 0.22em; text-transform: uppercase; margin-bottom: 2px; }
+  .tb-title { font-size: 22px; font-weight: 800; color: var(--ink); letter-spacing: -0.025em; }
+  .tb-date { display: inline-flex; align-items: center; gap: 8px; font-size: 14px; font-weight: 700; color: var(--ink); padding: 7px 14px; background: var(--navyMist); border: 1px solid var(--hair); border-radius: 99px; font-family: var(--fm); }
+  .tb-date.holiday { background: var(--amberMist); color: var(--amber); border-color: var(--amberHaze); }
+  .tb-date.weekend { background: var(--surfaceMute); color: var(--muted); }
   .tb-spacer { flex: 1; }
-  .stats-mini { display: flex; align-items: center; gap: 1px; }
-  .stat-mini { display: inline-flex; align-items: baseline; gap: 4px; padding: 3px 9px; border-right: 1px solid var(--hair); }
+  .stats-mini { display: flex; align-items: center; gap: 0; }
+  .stat-mini { display: inline-flex; align-items: baseline; gap: 7px; padding: 6px 14px; border-right: 1px solid var(--hair); }
   .stat-mini:last-child { border-right: none; }
-  .stat-mini-v { font-size: 14px; font-weight: 800; font-family: var(--fm); line-height: 1; letter-spacing: -0.02em; }
-  .stat-mini-l { font-size: 8.5px; font-weight: 700; color: var(--muted); letter-spacing: 0.1em; text-transform: uppercase; }
+  .stat-mini-v { font-size: 22px; font-weight: 800; font-family: var(--fm); line-height: 1; letter-spacing: -0.02em; }
+  .stat-mini-l { font-size: 11px; font-weight: 700; color: var(--muted); letter-spacing: 0.1em; text-transform: uppercase; }
 
-  /* Sync 상태 인디케이터 */
-  .sync-status { display: inline-flex; align-items: center; gap: 5px; padding: 3px 9px; font-size: 10px; font-weight: 700; border-radius: 99px; cursor: pointer; transition: all 0.15s ease; }
+  /* Sync 상태 */
+  .sync-status { display: inline-flex; align-items: center; gap: 7px; padding: 6px 13px; font-size: 13px; font-weight: 700; border-radius: 99px; cursor: pointer; transition: all 0.15s ease; }
   .sync-status.unconfigured { background: var(--surfaceMute); color: var(--muted); border: 1px solid var(--hair); }
   .sync-status.syncing { background: var(--goldHaze); color: var(--gold); border: 1px solid var(--goldLight); }
   .sync-status.synced { background: var(--sageMist); color: var(--sage); border: 1px solid var(--sageHaze); }
   .sync-status.error { background: var(--amberMist); color: var(--amber); border: 1px solid var(--amberHaze); }
   .sync-status:hover { transform: translateY(-1px); }
-  .sync-dot { width: 6px; height: 6px; border-radius: 99px; }
+  .sync-dot { width: 8px; height: 8px; border-radius: 99px; }
   .sync-dot.unconfigured { background: var(--faded); }
   .sync-dot.syncing { background: var(--goldLight); animation: pulse 1s infinite; }
   .sync-dot.synced { background: var(--sageLight); }
   .sync-dot.error { background: var(--amberLight); }
   @keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.4; } }
 
-  .btn-settings { display: inline-flex; align-items: center; gap: 5px; height: 26px; padding: 0 11px; font-size: 10.5px; font-weight: 700; border-radius: 5px; border: 1px solid var(--hair); color: var(--ink); background: var(--surface); cursor: pointer; font-family: inherit; transition: all 0.15s ease; }
+  .btn-settings { display: inline-flex; align-items: center; gap: 7px; height: 34px; padding: 0 16px; font-size: 13px; font-weight: 700; border-radius: 7px; border: 1px solid var(--hair); color: var(--ink); background: var(--surface); cursor: pointer; font-family: inherit; transition: all 0.15s ease; }
   .btn-settings:hover { border-color: var(--navy); }
 
-  .sync-bar { display: flex; gap: 5px; margin-bottom: 7px; align-items: center; padding: 6px 10px; background: var(--claudeMist); border: 1px solid var(--claudeBorder); border-left: 3px solid var(--claude); border-radius: 8px; flex-wrap: wrap; }
-  .sync-label { font-size: 9px; font-weight: 800; color: var(--claude); letter-spacing: 0.18em; text-transform: uppercase; padding-right: 6px; border-right: 1px solid var(--claudeBorder); margin-right: 4px; }
-  .sync-btn { display: inline-flex; align-items: center; gap: 5px; height: 26px; padding: 0 11px; font-size: 10.5px; font-weight: 700; border-radius: 5px; border: 1px solid var(--claudeBorder); color: var(--claude); background: var(--surface); cursor: pointer; font-family: inherit; letter-spacing: 0.02em; transition: all 0.15s ease; }
+  /* Claude 동기화 바 */
+  .sync-bar { display: flex; gap: 7px; margin-bottom: 10px; align-items: center; padding: 9px 14px; background: var(--claudeMist); border: 1px solid var(--claudeBorder); border-left: 4px solid var(--claude); border-radius: 10px; flex-wrap: wrap; }
+  .sync-label { font-size: 12px; font-weight: 800; color: var(--claude); letter-spacing: 0.18em; text-transform: uppercase; padding-right: 9px; border-right: 1px solid var(--claudeBorder); margin-right: 6px; }
+  .sync-btn { display: inline-flex; align-items: center; gap: 6px; height: 34px; padding: 0 14px; font-size: 13px; font-weight: 700; border-radius: 7px; border: 1px solid var(--claudeBorder); color: var(--claude); background: var(--surface); cursor: pointer; font-family: inherit; transition: all 0.15s ease; }
   .sync-btn:hover { background: var(--claude); color: #fff; }
   .sync-btn.primary { background: var(--claude); color: #fff; border-color: var(--claude); }
   .sync-btn.primary:hover { background: #B26A50; }
-  .sync-info { font-size: 9.5px; color: var(--muted); margin-left: auto; font-family: var(--fm); }
+  .sync-info { font-size: 12px; color: var(--muted); margin-left: auto; font-family: var(--fm); }
 
-  .input-bar { display: flex; gap: 4px; margin-bottom: 7px; align-items: stretch; flex-wrap: wrap; padding: 4px; background: var(--surface); border-radius: 8px; border: 1px solid var(--hair); box-shadow: 0 1px 0 var(--hairSoft); }
-  .inp { flex: 1; min-width: 140px; height: 27px; padding: 0 10px; font-size: 11.5px; border: 1px solid transparent; border-radius: 5px; background: transparent; font-family: inherit; color: var(--ink); outline: none; }
-  .inp-pri { flex: 0 0 70px; min-width: 70px; padding: 0 7px; border-left: 1px solid var(--hair); border-radius: 0; font-weight: 600; }
-  .inp-date { flex: 0 0 140px; min-width: 140px; padding: 0 9px; border-left: 1px solid var(--hair); border-radius: 0; color: var(--navy); font-weight: 600; font-family: var(--fm); font-size: 11px; }
-  .btn-add { height: 27px; padding: 0 14px; font-size: 11px; font-weight: 700; border-radius: 5px; border: none; color: var(--surface); background: var(--navy); cursor: pointer; font-family: inherit; letter-spacing: 0.04em; }
-  .btn-reset { height: 27px; padding: 0 11px; font-size: 10px; font-weight: 600; border-radius: 5px; border: 1px solid var(--hair); color: var(--muted); background: var(--surface); cursor: pointer; font-family: inherit; }
+  /* 입력 바 */
+  .input-bar { display: flex; gap: 5px; margin-bottom: 10px; align-items: stretch; flex-wrap: wrap; padding: 6px; background: var(--surface); border-radius: 10px; border: 1px solid var(--hair); box-shadow: 0 1px 0 var(--hairSoft); }
+  .inp { flex: 1; min-width: 180px; height: 36px; padding: 0 13px; font-size: 14px; border: 1px solid transparent; border-radius: 6px; background: transparent; font-family: inherit; color: var(--ink); outline: none; }
+  .inp-pri { flex: 0 0 90px; min-width: 90px; padding: 0 9px; border-left: 1px solid var(--hair); border-radius: 0; font-weight: 600; }
+  .inp-date { flex: 0 0 165px; min-width: 165px; padding: 0 11px; border-left: 1px solid var(--hair); border-radius: 0; color: var(--navy); font-weight: 600; font-family: var(--fm); font-size: 13px; }
+  .btn-add { height: 36px; padding: 0 18px; font-size: 13px; font-weight: 700; border-radius: 6px; border: none; color: var(--surface); background: var(--navy); cursor: pointer; font-family: inherit; letter-spacing: 0.04em; }
+  .btn-reset { height: 36px; padding: 0 13px; font-size: 12px; font-weight: 600; border-radius: 6px; border: 1px solid var(--hair); color: var(--muted); background: var(--surface); cursor: pointer; font-family: inherit; }
   .btn-reset:hover { color: var(--amber); border-color: var(--amberLight); }
-  .vsep { width: 1px; background: var(--hair); margin: 2px 3px; }
-  .filter-btn { height: 27px; padding: 0 11px; font-size: 11px; font-weight: 500; border-radius: 5px; border: none; color: var(--muted); background: transparent; cursor: pointer; font-family: inherit; letter-spacing: 0.03em; transition: all 0.15s ease; }
+  .vsep { width: 1px; background: var(--hair); margin: 3px 4px; }
+  .filter-btn { height: 36px; padding: 0 14px; font-size: 13px; font-weight: 500; border-radius: 6px; border: none; color: var(--muted); background: transparent; cursor: pointer; font-family: inherit; transition: all 0.15s ease; }
   .filter-btn.active { background: var(--navy); color: var(--surface); font-weight: 700; }
 
-  .week-strip { display: grid; grid-template-columns: repeat(7, 1fr); gap: 4px; margin-bottom: 8px; }
-  .day-pill { cursor: pointer; padding: 4px 4px; border-radius: 6px; border: 1px solid var(--hair); background: var(--surface); text-align: center; transition: all 0.15s ease; display: flex; align-items: center; justify-content: center; gap: 5px; }
+  /* 주간 스트립 */
+  .week-strip { display: grid; grid-template-columns: repeat(7, 1fr); gap: 6px; margin-bottom: 12px; }
+  .day-pill { cursor: pointer; padding: 8px 6px; border-radius: 8px; border: 1px solid var(--hair); background: var(--surface); text-align: center; transition: all 0.15s ease; display: flex; align-items: center; justify-content: center; gap: 8px; }
   .day-pill:hover { border-color: var(--navy); }
-  .day-pill.selected { background: var(--navyDeep); border-color: var(--navy); box-shadow: 0 3px 8px -2px rgba(14,40,65,0.4); }
+  .day-pill.selected { background: var(--navyDeep); border-color: var(--navy); box-shadow: 0 4px 10px -2px rgba(14,40,65,0.4); }
   .day-pill.weekend { background: var(--surfaceLow); }
-  .day-pill .wd { font-size: 8.5px; font-weight: 700; color: var(--muted); letter-spacing: 0.12em; }
+  .day-pill .wd { font-size: 11px; font-weight: 700; color: var(--muted); letter-spacing: 0.1em; }
   .day-pill.selected .wd { color: var(--faded); }
-  .day-pill .dnum { font-size: 13px; font-weight: 800; font-family: var(--fm); letter-spacing: -0.04em; }
+  .day-pill .dnum { font-size: 17px; font-weight: 800; font-family: var(--fm); letter-spacing: -0.04em; }
   .day-pill.selected .dnum { color: var(--surface); }
   .day-pill.today .dnum { color: var(--rose); }
   .day-pill.holiday .dnum { color: var(--amber); }
   .day-pill.weekend .dnum { color: var(--faded); }
-  .day-pill .ddot { width: 4px; height: 4px; border-radius: 99px; }
+  .day-pill .ddot { width: 5px; height: 5px; border-radius: 99px; }
 
-  .main { display: grid; grid-template-columns: 1.7fr minmax(0, 1fr); gap: 9px; }
-  @media (max-width: 768px) { .main { grid-template-columns: 1fr; } }
-  .card { background: var(--surface); border-radius: 9px; border: 1px solid var(--hair); padding: 10px; box-shadow: 0 1px 0 var(--hairSoft); min-width: 0; }
-  .st { display: flex; align-items: stretch; justify-content: space-between; margin-bottom: 7px; padding-bottom: 6px; border-bottom: 1px solid var(--hairSoft); }
-  .st-l { display: flex; gap: 8px; align-items: stretch; }
-  .st-bar { width: 3px; border-radius: 2px; }
+  /* 메인 그리드 */
+  .main { display: grid; grid-template-columns: 1.6fr minmax(0, 1fr); gap: 12px; }
+  @media (max-width: 900px) { .main { grid-template-columns: 1fr; } }
+  .card { background: var(--surface); border-radius: 12px; border: 1px solid var(--hair); padding: 14px; box-shadow: 0 1px 0 var(--hairSoft); min-width: 0; }
+  .st { display: flex; align-items: stretch; justify-content: space-between; margin-bottom: 10px; padding-bottom: 9px; border-bottom: 1px solid var(--hairSoft); }
+  .st-l { display: flex; gap: 10px; align-items: stretch; }
+  .st-bar { width: 4px; border-radius: 3px; }
   .st-bar.navy { background: var(--navy); }
   .st-bar.sage { background: var(--sage); }
-  .st-k { font-size: 8.5px; font-weight: 700; letter-spacing: 0.2em; text-transform: uppercase; line-height: 1; margin-bottom: 3px; }
+  .st-k { font-size: 11px; font-weight: 700; letter-spacing: 0.2em; text-transform: uppercase; line-height: 1; margin-bottom: 5px; }
   .st-k.navy { color: var(--navy); }
   .st-k.sage { color: var(--sage); }
-  .st-t { font-size: 13px; font-weight: 800; color: var(--ink); letter-spacing: -0.02em; line-height: 1; }
-  .st-r { display: flex; flex-direction: column; align-items: flex-end; gap: 2px; justify-content: center; }
-  .st-c { font-size: 16px; font-weight: 800; font-family: var(--fm); line-height: 1; letter-spacing: -0.03em; }
+  .st-t { font-size: 17px; font-weight: 800; color: var(--ink); letter-spacing: -0.02em; line-height: 1; }
+  .st-r { display: flex; flex-direction: column; align-items: flex-end; gap: 3px; justify-content: center; }
+  .st-c { font-size: 22px; font-weight: 800; font-family: var(--fm); line-height: 1; letter-spacing: -0.03em; }
   .st-c.navy { color: var(--navy); }
   .st-c.sage { color: var(--sage); }
-  .st-h { font-size: 8px; font-weight: 600; color: var(--faded); letter-spacing: 0.1em; text-transform: uppercase; }
+  .st-h { font-size: 10.5px; font-weight: 700; color: var(--faded); letter-spacing: 0.1em; text-transform: uppercase; }
 
-  .task-list { display: flex; flex-direction: column; min-height: 100px; }
-  .task-row { display: flex; align-items: center; gap: 8px; padding: 5px 6px; border-radius: 4px; border-bottom: 1px solid var(--hairSoft); border-left: 2px solid transparent; cursor: pointer; transition: all 0.13s ease; overflow: hidden; }
+  /* 할 일 */
+  .task-list { display: flex; flex-direction: column; min-height: 120px; }
+  .task-row { display: flex; align-items: center; gap: 11px; padding: 10px 9px; border-radius: 6px; border-bottom: 1px solid var(--hairSoft); border-left: 3px solid transparent; cursor: pointer; transition: all 0.13s ease; overflow: hidden; min-height: 42px; }
   .task-row:hover { background: var(--claudeMist); border-left-color: var(--claude); }
   .task-row:hover .task-title { color: var(--claude); font-weight: 600; }
-  .task-row.done { opacity: 0.7; background: rgba(220,252,231,0.3); }
+  .task-row.done { opacity: 0.65; background: rgba(220,252,231,0.3); }
   .task-row.done .task-title { color: var(--muted); text-decoration: line-through; }
-  .checkbox { width: 14px; height: 14px; border-radius: 3px; cursor: pointer; flex-shrink: 0; border: 1.5px solid var(--hair); background: transparent; display: inline-flex; align-items: center; justify-content: center; transition: all 0.15s ease; }
+  .checkbox { width: 19px; height: 19px; border-radius: 4px; cursor: pointer; flex-shrink: 0; border: 2px solid var(--hair); background: transparent; display: inline-flex; align-items: center; justify-content: center; transition: all 0.15s ease; }
   .checkbox.checked { border-color: var(--sage); background: var(--sage); }
-  .pdot { display: inline-block; width: 6px; height: 6px; border-radius: 999px; flex-shrink: 0; }
-  .pdot.urgent { background: var(--amberLight); box-shadow: 0 0 0 2px rgba(217,119,6,0.13); }
-  .pdot.normal { background: var(--gold); box-shadow: 0 0 0 2px rgba(168,132,69,0.13); }
-  .pdot.relax  { background: var(--sageLight); box-shadow: 0 0 0 2px rgba(22,163,74,0.13); }
-  .task-title { flex: 1 1 0; min-width: 0; font-size: 12px; color: var(--ink); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; font-weight: 500; line-height: 1.3; transition: color 0.13s ease; }
-  .date-badge { font-size: 9.5px; font-family: var(--fm); font-weight: 700; color: var(--muted); white-space: nowrap; flex-shrink: 0; }
+  .pdot { display: inline-block; width: 9px; height: 9px; border-radius: 999px; flex-shrink: 0; }
+  .pdot.urgent { background: var(--amberLight); box-shadow: 0 0 0 3px rgba(217,119,6,0.13); }
+  .pdot.normal { background: var(--gold); box-shadow: 0 0 0 3px rgba(168,132,69,0.13); }
+  .pdot.relax  { background: var(--sageLight); box-shadow: 0 0 0 3px rgba(22,163,74,0.13); }
+  .task-title { flex: 1 1 0; min-width: 0; font-size: 15px; color: var(--ink); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; font-weight: 500; line-height: 1.4; transition: color 0.13s ease; }
+  .date-badge { font-size: 12.5px; font-family: var(--fm); font-weight: 700; color: var(--muted); white-space: nowrap; flex-shrink: 0; }
   .date-badge.overdue { color: var(--amber); }
-  .date-badge.done { font-size: 9px; padding: 2px 5px; border-radius: 3px; display: inline-flex; align-items: center; gap: 3px; background: var(--sageMist); border: 1px solid var(--sageHaze); }
+  .date-badge.done { font-size: 12px; padding: 3px 8px; border-radius: 4px; display: inline-flex; align-items: center; gap: 5px; background: var(--sageMist); border: 1px solid var(--sageHaze); }
   .date-badge.done.late { background: var(--amberMist); border-color: var(--amberHaze); }
-  .status-pill { font-size: 7.5px; font-weight: 800; padding: 1px 3px; border-radius: 2px; color: #fff; letter-spacing: 0.04em; }
+  .status-pill { font-size: 10px; font-weight: 800; padding: 2px 5px; border-radius: 3px; color: #fff; letter-spacing: 0.04em; }
   .ico-btn { cursor: pointer; flex-shrink: 0; line-height: 1; text-align: center; transition: color 0.13s ease; color: var(--faded); }
-  .ico-btn.edit { font-size: 11px; font-weight: 700; width: 14px; }
-  .ico-btn.del  { font-size: 11px; font-weight: 500; width: 13px; }
+  .ico-btn.edit { font-size: 15px; font-weight: 700; width: 20px; }
+  .ico-btn.del  { font-size: 15px; font-weight: 500; width: 18px; }
   .task-row:hover .ico-btn.edit { color: var(--navy); }
   .task-row:hover .ico-btn.del { color: var(--amber); }
-  .empty-state { padding: 30px 10px; text-align: center; color: var(--faded); font-size: 11px; font-style: italic; }
-  .legend { margin-top: 6px; padding-top: 5px; border-top: 1px dashed var(--hairSoft); display: flex; flex-wrap: wrap; gap: 3px 11px; font-size: 9px; color: var(--faded); align-items: center; }
+  .empty-state { padding: 36px 12px; text-align: center; color: var(--faded); font-size: 14px; font-style: italic; }
+  .legend { margin-top: 9px; padding-top: 8px; border-top: 1px dashed var(--hairSoft); display: flex; flex-wrap: wrap; gap: 4px 14px; font-size: 11.5px; color: var(--faded); align-items: center; }
   .legend .claude-tag { color: var(--claude); font-weight: 700; }
 
-  .right-col { display: flex; flex-direction: column; gap: 7px; min-width: 0; }
-  .day-card { padding: 8px 10px; border-radius: 9px; border: 1px solid var(--hair); background: var(--surface); }
+  /* 우측 컬럼 */
+  .right-col { display: flex; flex-direction: column; gap: 10px; min-width: 0; }
+  .day-card { padding: 12px 14px; border-radius: 12px; border: 1px solid var(--hair); background: var(--surface); }
   .day-card.companyOff { background: linear-gradient(135deg, #FEF3C7 0%, #FDE68A 100%); border-color: var(--amberLight); }
   .day-card.holiday { background: linear-gradient(135deg, #FFFBEB 0%, #FEF3C7 100%); border-color: var(--amberHaze); }
   .day-card.today { background: linear-gradient(135deg, #FDF2F8 0%, #FCE7F3 100%); border-color: var(--rose); }
   .day-card.openday { background: linear-gradient(135deg, #F0FDF4 0%, #DCFCE7 100%); border-color: var(--sageLight); }
-  .day-card-row { display: flex; align-items: center; gap: 9px; justify-content: space-between; }
-  .day-card-l { display: flex; gap: 8px; align-items: center; min-width: 0; }
-  .day-bar { width: 3px; height: 28px; border-radius: 2px; flex-shrink: 0; background: var(--navy); }
+  .day-card-row { display: flex; align-items: center; gap: 12px; justify-content: space-between; }
+  .day-card-l { display: flex; gap: 10px; align-items: center; min-width: 0; }
+  .day-bar { width: 4px; height: 38px; border-radius: 3px; flex-shrink: 0; background: var(--navy); }
   .day-bar.amber { background: var(--amber); }
   .day-bar.rose { background: var(--rose); }
   .day-bar.sage { background: var(--sage); }
   .day-info { min-width: 0; }
-  .day-wkk { font-size: 8px; font-weight: 700; letter-spacing: 0.18em; text-transform: uppercase; line-height: 1; margin-bottom: 3px; }
+  .day-wkk { font-size: 10.5px; font-weight: 700; letter-spacing: 0.18em; text-transform: uppercase; line-height: 1; margin-bottom: 5px; }
   .day-wkk.navy { color: var(--navy); }
   .day-wkk.amber { color: var(--amber); }
   .day-wkk.rose { color: var(--rose); }
   .day-wkk.sage { color: var(--sage); }
-  .day-date { font-size: 16px; font-weight: 800; line-height: 1; letter-spacing: -0.03em; font-family: var(--fm); color: var(--ink); white-space: nowrap; }
-  .day-wkkr { font-size: 10px; color: var(--muted); margin-left: 5px; font-family: var(--fd); font-weight: 600; }
-  .day-tag { font-size: 9px; font-weight: 700; padding: 2px 7px; color: var(--surface); border-radius: 99px; letter-spacing: 0.05em; flex-shrink: 0; white-space: nowrap; }
+  .day-date { font-size: 21px; font-weight: 800; line-height: 1; letter-spacing: -0.03em; font-family: var(--fm); color: var(--ink); white-space: nowrap; }
+  .day-wkkr { font-size: 13.5px; color: var(--muted); margin-left: 7px; font-family: var(--fd); font-weight: 600; }
+  .day-tag { font-size: 11.5px; font-weight: 700; padding: 4px 10px; color: var(--surface); border-radius: 99px; letter-spacing: 0.05em; flex-shrink: 0; white-space: nowrap; }
   .day-tag.amber-bg { background: var(--amber); }
   .day-tag.amberLight-bg { background: var(--amberLight); }
   .day-tag.rose-bg { background: var(--rose); }
   .day-tag.sage-bg { background: var(--sage); }
 
-  .hour-block { display: grid; grid-template-columns: 78px minmax(0, 1fr); gap: 6px; padding: 3px 7px; border-radius: 4px; align-items: center; min-height: 22px; border-left: 2px solid var(--navy); }
-  .hour-block + .hour-block { margin-top: 2px; }
+  /* 시간대별 일과 */
+  .hour-block { display: grid; grid-template-columns: 100px minmax(0, 1fr); gap: 9px; padding: 6px 10px; border-radius: 6px; align-items: center; min-height: 32px; border-left: 3px solid var(--navy); }
+  .hour-block + .hour-block { margin-top: 4px; }
   .hour-block.meeting { border-left-color: var(--navy); background: var(--navyMist); }
   .hour-block.task { background: var(--surface); }
   .hour-block.task.urgent { border-left-color: var(--amberLight); }
   .hour-block.task.normal { border-left-color: var(--gold); }
   .hour-block.lunch { border-left-color: var(--faded); background: var(--surfaceMute); }
   .hour-block.buffer { border-left-color: var(--goldLight); background: var(--goldHaze); }
-  .hour-block.flex { border-left-color: var(--sageLight); background: var(--sageMist); border: 1px dashed var(--sageHaze); border-left: 2px dashed var(--sageLight); }
-  .hb-time { font-size: 9.5px; font-weight: 700; color: var(--ink); font-family: var(--fm); letter-spacing: -0.02em; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .hour-block.flex { border-left-color: var(--sageLight); background: var(--sageMist); border: 1px dashed var(--sageHaze); border-left: 3px dashed var(--sageLight); }
+  .hb-time { font-size: 12.5px; font-weight: 700; color: var(--ink); font-family: var(--fm); letter-spacing: -0.02em; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
   .hb-time .arrow { color: var(--faded); }
-  .hb-content { display: flex; align-items: center; gap: 5px; min-width: 0; overflow: hidden; }
-  .hb-chip { font-size: 8px; font-weight: 800; padding: 1px 5px; border-radius: 2px; letter-spacing: 0.06em; flex-shrink: 0; }
+  .hb-content { display: flex; align-items: center; gap: 7px; min-width: 0; overflow: hidden; }
+  .hb-chip { font-size: 10.5px; font-weight: 800; padding: 2px 7px; border-radius: 3px; letter-spacing: 0.06em; flex-shrink: 0; }
   .hb-chip.meeting { background: var(--navy); color: #fff; }
   .hb-chip.lunch { background: var(--surfaceMute); color: var(--muted); border: 1px solid var(--hair); font-weight: 700; }
   .hb-chip.buffer { background: transparent; color: var(--gold); border: 1px solid var(--goldLight); font-weight: 700; }
   .hb-chip.flex { background: transparent; color: var(--sage); border: 1px dashed var(--sageLight); font-weight: 700; }
-  .hb-title { flex: 1 1 0; min-width: 0; font-size: 10.5px; color: var(--ink); font-weight: 500; line-height: 1.3; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  .hb-title { flex: 1 1 0; min-width: 0; font-size: 13.5px; color: var(--ink); font-weight: 500; line-height: 1.3; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
   .hb-title.meeting { font-weight: 700; }
   .hb-title.lunch { color: var(--muted); font-style: italic; }
-  .hb-loc { color: var(--muted); margin-left: 4px; font-size: 9.5px; font-style: italic; }
-  .hb-note { color: var(--muted); margin-left: 4px; font-size: 9.5px; font-family: var(--fm); }
-  .openday-banner { background: var(--sageMist); border: 1px solid var(--sageHaze); border-radius: 5px; padding: 5px 8px; margin-bottom: 5px; font-size: 9.5px; color: var(--sage); font-weight: 600; display: flex; align-items: center; gap: 6px; }
-  .rest-card { padding: 18px 10px; text-align: center; background: linear-gradient(135deg, var(--amberMist) 0%, var(--amberHaze) 100%); border-radius: 7px; border: 1px dashed var(--amberLight); }
-  .rest-icon { font-size: 24px; margin-bottom: 4px; line-height: 1; }
-  .rest-title { font-size: 12px; font-weight: 800; color: var(--amber); margin-bottom: 3px; }
-  .rest-sub { font-size: 10px; color: var(--amber); font-weight: 500; opacity: 0.85; }
+  .hb-loc { color: var(--muted); margin-left: 6px; font-size: 12.5px; font-style: italic; }
+  .hb-note { color: var(--muted); margin-left: 6px; font-size: 12.5px; font-family: var(--fm); }
+  .openday-banner { background: var(--sageMist); border: 1px solid var(--sageHaze); border-radius: 6px; padding: 8px 11px; margin-bottom: 7px; font-size: 12.5px; color: var(--sage); font-weight: 600; display: flex; align-items: center; gap: 8px; }
+  .rest-card { padding: 28px 14px; text-align: center; background: linear-gradient(135deg, var(--amberMist) 0%, var(--amberHaze) 100%); border-radius: 9px; border: 1px dashed var(--amberLight); }
+  .rest-icon { font-size: 36px; margin-bottom: 7px; line-height: 1; }
+  .rest-title { font-size: 16px; font-weight: 800; color: var(--amber); margin-bottom: 5px; }
+  .rest-sub { font-size: 13px; color: var(--amber); font-weight: 500; opacity: 0.85; }
 
-  .edit-row { padding: 6px 6px; background: var(--navyMist); border-left: 2px solid var(--navy); border-bottom: 1px solid var(--hairSoft); border-radius: 4px; margin: 1px 0; box-shadow: 0 2px 8px -3px rgba(14,40,65,0.2); }
-  .edit-grid { display: grid; grid-template-columns: 14px 1fr 24px 24px; gap: 6px; align-items: center; margin-bottom: 5px; }
-  .edit-meta { display: flex; gap: 6px; align-items: center; padding-left: 20px; flex-wrap: wrap; }
-  .edit-inp { width: 100%; height: 24px; padding: 0 8px; font-size: 11.5px; border: 1px solid var(--hair); border-radius: 4px; background: var(--surface); font-family: inherit; color: var(--ink); outline: none; }
-  .edit-btn { width: 24px; height: 24px; border-radius: 4px; cursor: pointer; font-weight: 700; display: flex; align-items: center; justify-content: center; font-family: inherit; flex-shrink: 0; }
-  .edit-btn.save { background: var(--sage); color: #fff; border: none; font-size: 12px; }
-  .edit-btn.cancel { background: var(--surface); color: var(--muted); border: 1px solid var(--hair); font-size: 11px; }
+  /* 편집 행 */
+  .edit-row { padding: 9px 9px; background: var(--navyMist); border-left: 3px solid var(--navy); border-bottom: 1px solid var(--hairSoft); border-radius: 6px; margin: 2px 0; box-shadow: 0 3px 10px -3px rgba(14,40,65,0.2); }
+  .edit-grid { display: grid; grid-template-columns: 19px 1fr 30px 30px; gap: 9px; align-items: center; margin-bottom: 7px; }
+  .edit-meta { display: flex; gap: 8px; align-items: center; padding-left: 28px; flex-wrap: wrap; }
+  .edit-inp { width: 100%; height: 30px; padding: 0 10px; font-size: 14px; border: 1px solid var(--hair); border-radius: 5px; background: var(--surface); font-family: inherit; color: var(--ink); outline: none; }
+  .edit-btn { width: 30px; height: 30px; border-radius: 5px; cursor: pointer; font-weight: 700; display: flex; align-items: center; justify-content: center; font-family: inherit; flex-shrink: 0; }
+  .edit-btn.save { background: var(--sage); color: #fff; border: none; font-size: 15px; }
+  .edit-btn.cancel { background: var(--surface); color: var(--muted); border: 1px solid var(--hair); font-size: 13px; }
 
   /* 모달 */
-  .modal-backdrop { position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(14,40,65,0.4); backdrop-filter: blur(3px); display: flex; align-items: center; justify-content: center; z-index: 999; padding: 16px; }
-  .modal { background: var(--surface); border-radius: 12px; padding: 18px; max-width: 600px; width: 100%; box-shadow: 0 20px 60px -10px rgba(0,0,0,0.3); max-height: 90vh; overflow-y: auto; }
-  .modal-header { display: flex; align-items: center; gap: 10px; margin-bottom: 12px; padding-bottom: 10px; border-bottom: 1px solid var(--hairSoft); }
-  .modal-title { font-size: 14px; font-weight: 800; color: var(--ink); flex: 1; }
-  .modal-close { width: 24px; height: 24px; border-radius: 4px; border: 1px solid var(--hair); background: var(--surface); cursor: pointer; font-size: 13px; color: var(--muted); }
-  .modal-body { display: flex; flex-direction: column; gap: 10px; }
-  .modal-info { font-size: 11px; color: var(--muted); line-height: 1.5; }
-  .modal-textarea { width: 100%; min-height: 100px; padding: 10px; border: 1px solid var(--hair); border-radius: 6px; font-family: var(--fm); font-size: 11px; color: var(--ink); resize: vertical; outline: none; background: var(--surfaceLow); }
+  .modal-backdrop { position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(14,40,65,0.45); backdrop-filter: blur(4px); display: flex; align-items: center; justify-content: center; z-index: 999; padding: 20px; }
+  .modal { background: var(--surface); border-radius: 14px; padding: 22px; max-width: 700px; width: 100%; box-shadow: 0 25px 70px -10px rgba(0,0,0,0.35); max-height: 92vh; overflow-y: auto; }
+  .modal-header { display: flex; align-items: center; gap: 12px; margin-bottom: 14px; padding-bottom: 12px; border-bottom: 1px solid var(--hairSoft); }
+  .modal-title { font-size: 18px; font-weight: 800; color: var(--ink); flex: 1; }
+  .modal-close { width: 30px; height: 30px; border-radius: 6px; border: 1px solid var(--hair); background: var(--surface); cursor: pointer; font-size: 16px; color: var(--muted); }
+  .modal-body { display: flex; flex-direction: column; gap: 12px; }
+  .modal-info { font-size: 13.5px; color: var(--muted); line-height: 1.6; }
+  .modal-info b { color: var(--ink); }
+  .modal-textarea { width: 100%; min-height: 130px; padding: 12px; border: 1px solid var(--hair); border-radius: 7px; font-family: var(--fm); font-size: 13px; color: var(--ink); resize: vertical; outline: none; background: var(--surfaceLow); line-height: 1.5; }
   .modal-textarea:focus { border-color: var(--claude); background: var(--surface); }
-  .modal-input { width: 100%; height: 32px; padding: 0 10px; font-size: 12px; border: 1px solid var(--hair); border-radius: 6px; font-family: var(--fm); color: var(--ink); outline: none; background: var(--surface); }
+  .modal-input { width: 100%; height: 38px; padding: 0 12px; font-size: 14px; border: 1px solid var(--hair); border-radius: 7px; font-family: var(--fm); color: var(--ink); outline: none; background: var(--surface); }
   .modal-input:focus { border-color: var(--navy); }
-  .modal-input.password { font-family: var(--fm); }
-  .modal-label { font-size: 10px; font-weight: 700; color: var(--ink); letter-spacing: 0.06em; text-transform: uppercase; margin-bottom: 4px; }
-  .modal-actions { display: flex; gap: 6px; justify-content: flex-end; margin-top: 8px; flex-wrap: wrap; }
-  .modal-btn { height: 32px; padding: 0 14px; font-size: 12px; font-weight: 700; border-radius: 6px; cursor: pointer; font-family: inherit; }
+  .modal-label { font-size: 12px; font-weight: 700; color: var(--ink); letter-spacing: 0.06em; text-transform: uppercase; margin-bottom: 5px; }
+  .modal-actions { display: flex; gap: 8px; justify-content: flex-end; margin-top: 10px; flex-wrap: wrap; }
+  .modal-btn { height: 38px; padding: 0 18px; font-size: 14px; font-weight: 700; border-radius: 7px; cursor: pointer; font-family: inherit; }
   .modal-btn.primary { background: var(--claude); color: #fff; border: none; }
   .modal-btn.secondary { background: var(--surface); color: var(--muted); border: 1px solid var(--hair); }
   .modal-btn.danger { background: var(--surface); color: var(--amber); border: 1px solid var(--amberLight); }
   .modal-btn.github { background: var(--github); color: #fff; border: none; }
+  .modal-btn.navy { background: var(--navy); color: #fff; border: none; }
 
-  /* 설정 모달 */
-  .setup-step { padding: 10px 12px; border: 1px solid var(--hair); border-radius: 8px; background: var(--surfaceLow); }
-  .setup-step-title { font-size: 11px; font-weight: 800; color: var(--ink); margin-bottom: 6px; display: flex; align-items: center; gap: 6px; }
-  .setup-step-title .num { width: 18px; height: 18px; border-radius: 99px; background: var(--navy); color: #fff; display: inline-flex; align-items: center; justify-content: center; font-size: 10px; font-weight: 800; flex-shrink: 0; }
-  .setup-link { color: var(--navy); font-weight: 700; text-decoration: none; padding: 1px 4px; border-radius: 3px; background: var(--navyMist); font-size: 10.5px; font-family: var(--fm); }
+  /* 설정 탭 */
+  .tabs { display: flex; gap: 4px; margin-bottom: 14px; border-bottom: 2px solid var(--hairSoft); }
+  .tab { padding: 9px 14px; font-size: 13px; font-weight: 700; color: var(--muted); background: transparent; border: none; cursor: pointer; font-family: inherit; border-bottom: 3px solid transparent; margin-bottom: -2px; transition: all 0.15s; }
+  .tab.active { color: var(--navy); border-bottom-color: var(--navy); }
+  .tab:hover { color: var(--ink); }
+  .tab-content { display: none; flex-direction: column; gap: 12px; }
+  .tab-content.active { display: flex; }
+
+  .setup-step { padding: 13px 14px; border: 1px solid var(--hair); border-radius: 9px; background: var(--surfaceLow); }
+  .setup-step-title { font-size: 14px; font-weight: 800; color: var(--ink); margin-bottom: 8px; display: flex; align-items: center; gap: 8px; }
+  .setup-step-title .num { width: 24px; height: 24px; border-radius: 99px; background: var(--navy); color: #fff; display: inline-flex; align-items: center; justify-content: center; font-size: 13px; font-weight: 800; flex-shrink: 0; }
+  .setup-link { color: var(--navy); font-weight: 700; text-decoration: none; padding: 2px 6px; border-radius: 4px; background: var(--navyMist); font-size: 13px; font-family: var(--fm); }
   .setup-link:hover { text-decoration: underline; }
-  .setup-code { display: block; padding: 7px 9px; background: var(--ink); color: #C9F7AF; border-radius: 4px; font-family: var(--fm); font-size: 10px; margin: 5px 0; word-break: break-all; }
-  .field-group { display: flex; flex-direction: column; gap: 4px; }
-  .field-hint { font-size: 9.5px; color: var(--muted); font-style: italic; }
+  .setup-code { display: block; padding: 9px 12px; background: var(--ink); color: #C9F7AF; border-radius: 6px; font-family: var(--fm); font-size: 12.5px; margin: 7px 0; word-break: break-all; line-height: 1.5; }
+  .setup-code.long { font-size: 11px; max-height: 200px; overflow-y: auto; }
+  .field-group { display: flex; flex-direction: column; gap: 5px; }
+  .field-hint { font-size: 12px; color: var(--muted); font-style: italic; }
 
-  .toast { position: fixed; bottom: 20px; left: 50%; transform: translateX(-50%); padding: 10px 18px; background: var(--navy); color: #fff; border-radius: 8px; font-size: 12px; font-weight: 600; box-shadow: 0 8px 24px -4px rgba(14,40,65,0.4); z-index: 1000; opacity: 0; transition: opacity 0.3s ease, transform 0.3s ease; pointer-events: none; }
+  /* 북마크릿 드래그 */
+  .bookmarklet-link { display: inline-block; padding: 10px 20px; background: var(--navy); color: #fff; border-radius: 8px; text-decoration: none; font-weight: 800; font-size: 14px; cursor: grab; box-shadow: 0 2px 6px rgba(14,40,65,0.3); }
+  .bookmarklet-link:active { cursor: grabbing; }
+
+  /* 토스트 */
+  .toast { position: fixed; bottom: 24px; left: 50%; transform: translateX(-50%); padding: 13px 22px; background: var(--navy); color: #fff; border-radius: 10px; font-size: 14px; font-weight: 600; box-shadow: 0 10px 30px -4px rgba(14,40,65,0.4); z-index: 1000; opacity: 0; transition: opacity 0.3s ease, transform 0.3s ease; pointer-events: none; }
   .toast.show { opacity: 1; transform: translateX(-50%) translateY(-8px); }
   .toast.error { background: var(--amber); }
   .toast.success { background: var(--sage); }
-  .toast.info { background: var(--navy); }
 
-  .footer { margin-top: 10px; padding-top: 8px; border-top: 1px solid var(--hair); display: flex; align-items: center; justify-content: space-between; font-size: 9px; color: var(--faded); flex-wrap: wrap; gap: 6px; }
+  .footer { margin-top: 14px; padding-top: 11px; border-top: 1px solid var(--hair); display: flex; align-items: center; justify-content: space-between; font-size: 11.5px; color: var(--faded); flex-wrap: wrap; gap: 8px; }
   .footer-brand { font-weight: 600; letter-spacing: 0.14em; text-transform: uppercase; }
   .footer-meta { font-family: var(--fm); }
 </style>
@@ -247,14 +271,119 @@
 // ── 상수 ──
 const STORAGE_KEY = "sir_todo_v1";
 const GIST_CONFIG_KEY = "sir_todo_gist_config_v1";
+const WORKER_CONFIG_KEY = "sir_todo_worker_config_v1";
 const SYNC_VERSION = "S1";
 const POLL_INTERVAL_MS = 30000;
 const DEBOUNCE_PUSH_MS = 1500;
+const SITE_ORIGIN = window.location.origin + window.location.pathname.replace(/\/$/, "");
 
-const TODAY_ISO = (() => {
-  const d = new Date();
-  return d.getFullYear() + "-" + String(d.getMonth() + 1).padStart(2, "0") + "-" + String(d.getDate()).padStart(2, "0");
-})();
+// ── 동적 오늘 날짜 ──
+const TODAY = new Date();
+const TODAY_ISO = TODAY.getFullYear() + "-" + String(TODAY.getMonth() + 1).padStart(2, "0") + "-" + String(TODAY.getDate()).padStart(2, "0");
+const KOREAN_WEEKDAY = ["일","월","화","수","목","금","토"];
+const ENGLISH_WEEKDAY = ["SUN","MON","TUE","WED","THU","FRI","SAT"];
+
+// 한국 공휴일 2026
+const KOREAN_HOLIDAYS = {
+  "2026-01-01": "신정",
+  "2026-02-16": "설날 연휴", "2026-02-17": "설날", "2026-02-18": "설날 연휴",
+  "2026-03-01": "삼일절",
+  "2026-05-01": "근로자의 날",
+  "2026-05-05": "어린이날",
+  "2026-05-24": "부처님오신날", "2026-05-25": "부처님오신날 대체",
+  "2026-06-06": "현충일",
+  "2026-08-15": "광복절", "2026-08-17": "광복절 대체",
+  "2026-09-24": "추석 연휴", "2026-09-25": "추석", "2026-09-26": "추석 연휴",
+  "2026-10-03": "개천절", "2026-10-05": "개천절 대체",
+  "2026-10-09": "한글날",
+  "2026-12-25": "크리스마스",
+};
+
+// 사전 정의된 캘린더 이벤트 (날짜별 이벤트가 있는 경우)
+const calendarEvents = {
+  "2026-05-04": { isCompanyOff: true, offName: "공동연차",
+    hourly: { kind: "blocks", blocks: [
+      { t: "09:00", e: "10:00", k: "task", p: "긴급", l: "KII 보고자료 점검" },
+      { t: "10:00", e: "11:00", k: "meeting", l: "제조DX 영업회의", loc: "10층 DX룸" },
+      { t: "11:00", e: "12:00", k: "task", p: "긴급", l: "KMG 계약서 날인" },
+      { t: "12:00", e: "13:00", k: "lunch" },
+      { t: "13:00", e: "13:30", k: "task", p: "긴급", l: "sas 시나리오 점검", note: "30m" },
+      { t: "13:30", e: "15:00", k: "meeting", l: "DX본부 주간회의", loc: "Teams" },
+      { t: "15:00", e: "16:00", k: "task", p: "긴급", l: "KMG 교육 프로그램 확정" },
+      { t: "16:00", e: "17:00", k: "task", p: "긴급", l: "한화솔루션 발표자료 수정" },
+      { t: "17:00", e: "18:00", k: "task", p: "보통", l: "personal goal 알림 전송" },
+    ] } },
+  "2026-05-06": { hourly: { kind: "blocks", blocks: [
+      { t: "09:00", e: "10:00", k: "task", p: "긴급", l: "KMG 과제정의서 작성 (1/3)" },
+      { t: "10:00", e: "11:00", k: "task", p: "긴급", l: "KMG 과제정의서 작성 (2/3)" },
+      { t: "11:00", e: "12:00", k: "task", p: "긴급", l: "KII 보고자료 최종 점검" },
+      { t: "12:00", e: "13:00", k: "lunch" },
+      { t: "13:00", e: "14:00", k: "task", p: "긴급", l: "2단계 교육 프로그램 확정" },
+      { t: "14:00", e: "15:00", k: "meeting", l: "DX본부 주간회의", loc: "10층 1007호" },
+      { t: "15:00", e: "16:00", k: "task", p: "보통", l: "KLS 탈퇴 회의 방안 정리" },
+      { t: "16:00", e: "17:00", k: "task", p: "긴급", l: "KMG 과제정의서 작성 (3/3)" },
+      { t: "17:00", e: "18:00", k: "task", p: "보통", l: "익일 준비" },
+    ] } },
+  "2026-05-07": { hourly: { kind: "blocks", blocks: [
+      { t: "09:00", e: "10:00", k: "task", p: "보통", l: "한화 발표자료 작성" },
+      { t: "10:00", e: "11:30", k: "meeting", l: "데이터분석과제 리뷰", loc: "4층 중회의실 2" },
+      { t: "11:30", e: "12:00", k: "buffer", l: "회의 후속 정리" },
+      { t: "12:00", e: "13:00", k: "lunch" },
+      { t: "13:00", e: "13:30", k: "buffer", l: "한화 미팅 자료 점검" },
+      { t: "13:30", e: "15:00", k: "meeting", l: "한화솔루션 데이터 분석", loc: "Teams" },
+      { t: "15:00", e: "16:00", k: "buffer", l: "KSW · KGI 자료 준비" },
+      { t: "16:00", e: "17:00", k: "meeting", l: "KSW · KGI 최종 미팅", loc: "DX본부장실" },
+      { t: "17:00", e: "18:00", k: "task", p: "보통", l: "일과 정리 + 익일 준비" },
+    ] } },
+  "2026-05-08": { isOpenDay: true, hourly: { kind: "blocks", blocks: [
+      { t: "09:00", e: "10:00", k: "flex", l: "주간 업무 정리 + 잔여 task 점검" },
+      { t: "10:00", e: "11:00", k: "flex", l: "KMG 후속 처리 (계약·교육 정렬)" },
+      { t: "11:00", e: "12:00", k: "flex", l: "한화솔루션 follow-up" },
+      { t: "12:00", e: "13:00", k: "lunch" },
+      { t: "13:00", e: "14:00", k: "flex", l: "데이터분석과제 진척 점검" },
+      { t: "14:00", e: "15:00", k: "flex", l: "팀원 1on1 (선택)" },
+      { t: "15:00", e: "16:00", k: "flex", l: "차주 KMG 교육 1주차 준비" },
+      { t: "16:00", e: "17:00", k: "buffer", l: "주간 보고서 작성" },
+      { t: "17:00", e: "18:00", k: "flex", l: "차주 계획 + 일과 마무리" },
+    ] } },
+};
+
+// 동적 캘린더 생성 (오늘부터 7일)
+function generateCalendar() {
+  const today = new Date(TODAY_ISO + "T00:00:00");
+  const result = [];
+  for (let i = 0; i < 7; i++) {
+    const d = new Date(today); d.setDate(today.getDate() + i);
+    const iso = d.getFullYear() + "-" + String(d.getMonth() + 1).padStart(2, "0") + "-" + String(d.getDate()).padStart(2, "0");
+    const dow = d.getDay();
+    const event = calendarEvents[iso] || {};
+    const holiday = KOREAN_HOLIDAYS[iso];
+    const isHoliday = !!holiday;
+    const isWeekend = dow === 0 || dow === 6;
+    let hourly;
+    if (event.hourly) hourly = event.hourly;
+    else if (isHoliday) hourly = { kind: "rest", icon: "🎉", title: holiday + " · 휴무", sub: "공휴일입니다" };
+    else if (isWeekend) hourly = { kind: "rest", icon: "🌿", title: (dow === 6 ? "토요일" : "일요일") + " · 휴무", sub: "주말입니다" };
+    else hourly = { kind: "blocks", blocks: [
+      { t: "09:00", e: "10:00", k: "buffer", l: "오전 업무 시작" },
+      { t: "10:00", e: "12:00", k: "buffer", l: "주요 업무" },
+      { t: "12:00", e: "13:00", k: "lunch" },
+      { t: "13:00", e: "15:00", k: "buffer", l: "오후 업무" },
+      { t: "15:00", e: "17:00", k: "buffer", l: "오후 업무 (후반)" },
+      { t: "17:00", e: "18:00", k: "buffer", l: "일과 정리" },
+    ]};
+    result.push({
+      iso, date: (d.getMonth() + 1) + "/" + d.getDate(),
+      weekday: ENGLISH_WEEKDAY[dow], weekdayKr: KOREAN_WEEKDAY[dow],
+      isWeekend, isToday: i === 0, isHoliday, holidayName: holiday,
+      isCompanyOff: event.isCompanyOff, offName: event.offName, isOpenDay: event.isOpenDay,
+      hourly,
+    });
+  }
+  return result;
+}
+
+let calendar = generateCalendar();
 
 const SEED_TASKS = [
   { id: 1, p: "긴급", title: "KII 과제별 센터장 보고자료 점검", due: "2026-04-30", createdAt: "2026-04-22", done: false, completedAt: null },
@@ -269,94 +398,31 @@ const SEED_TASKS = [
   { id: 10, p: "보통", title: "한화 발표자료 작성", due: "2026-04-28", createdAt: "2026-04-22", done: false, completedAt: null },
 ];
 
-const calendar = [
-  { date: "5/2", iso: "2026-05-02", weekday: "SAT", weekdayKr: "토", isWeekend: true, hourly: { kind: "rest", icon: "🌿", title: "토요일 · 휴무", sub: "주말입니다" } },
-  { date: "5/3", iso: "2026-05-03", weekday: "SUN", weekdayKr: "일", isWeekend: true, hourly: { kind: "rest", icon: "🌿", title: "일요일 · 휴무", sub: "주말입니다" } },
-  { date: "5/4", iso: "2026-05-04", weekday: "MON", weekdayKr: "월", isCompanyOff: true, offName: "공동연차",
-    hourly: { kind: "blocks", blocks: [
-      { t: "09:00", e: "10:00", k: "task", p: "긴급", l: "KII 보고자료 점검" },
-      { t: "10:00", e: "11:00", k: "meeting", l: "제조DX 영업회의", loc: "10층 DX룸" },
-      { t: "11:00", e: "12:00", k: "task", p: "긴급", l: "KMG 계약서 날인" },
-      { t: "12:00", e: "13:00", k: "lunch" },
-      { t: "13:00", e: "13:30", k: "task", p: "긴급", l: "sas 시나리오 점검", note: "30m" },
-      { t: "13:30", e: "15:00", k: "meeting", l: "DX본부 주간회의", loc: "Teams" },
-      { t: "15:00", e: "16:00", k: "task", p: "긴급", l: "KMG 교육 프로그램 확정" },
-      { t: "16:00", e: "17:00", k: "task", p: "긴급", l: "한화솔루션 발표자료 수정" },
-      { t: "17:00", e: "18:00", k: "task", p: "보통", l: "personal goal 알림 전송" },
-    ] } },
-  { date: "5/5", iso: "2026-05-05", weekday: "TUE", weekdayKr: "화", isHoliday: true, holidayName: "어린이날",
-    hourly: { kind: "rest", icon: "🎉", title: "어린이날 · 휴무", sub: "필요 시 KMG MTF 자료 자율 작성" } },
-  { date: "5/6", iso: "2026-05-06", weekday: "WED", weekdayKr: "수",
-    hourly: { kind: "blocks", blocks: [
-      { t: "09:00", e: "10:00", k: "task", p: "긴급", l: "KMG 과제정의서 작성 (1/3)" },
-      { t: "10:00", e: "11:00", k: "task", p: "긴급", l: "KMG 과제정의서 작성 (2/3)" },
-      { t: "11:00", e: "12:00", k: "task", p: "긴급", l: "KII 보고자료 최종 점검" },
-      { t: "12:00", e: "13:00", k: "lunch" },
-      { t: "13:00", e: "14:00", k: "task", p: "긴급", l: "2단계 교육 프로그램 확정" },
-      { t: "14:00", e: "15:00", k: "meeting", l: "DX본부 주간회의", loc: "10층 1007호" },
-      { t: "15:00", e: "16:00", k: "task", p: "보통", l: "KLS 탈퇴 회의 방안 정리" },
-      { t: "16:00", e: "17:00", k: "task", p: "긴급", l: "KMG 과제정의서 작성 (3/3)" },
-      { t: "17:00", e: "18:00", k: "task", p: "보통", l: "익일 준비" },
-    ] } },
-  { date: "5/7", iso: "2026-05-07", weekday: "THU", weekdayKr: "목",
-    hourly: { kind: "blocks", blocks: [
-      { t: "09:00", e: "10:00", k: "task", p: "보통", l: "한화 발표자료 작성" },
-      { t: "10:00", e: "11:30", k: "meeting", l: "데이터분석과제 리뷰", loc: "4층 중회의실 2" },
-      { t: "11:30", e: "12:00", k: "buffer", l: "회의 후속 정리" },
-      { t: "12:00", e: "13:00", k: "lunch" },
-      { t: "13:00", e: "13:30", k: "buffer", l: "한화 미팅 자료 점검" },
-      { t: "13:30", e: "15:00", k: "meeting", l: "한화솔루션 데이터 분석", loc: "Teams" },
-      { t: "15:00", e: "16:00", k: "buffer", l: "KSW · KGI 자료 준비" },
-      { t: "16:00", e: "17:00", k: "meeting", l: "KSW · KGI 최종 미팅", loc: "DX본부장실" },
-      { t: "17:00", e: "18:00", k: "task", p: "보통", l: "일과 정리 + 익일 준비" },
-    ] } },
-  { date: "5/8", iso: "2026-05-08", weekday: "FRI", weekdayKr: "금", isOpenDay: true,
-    hourly: { kind: "blocks", blocks: [
-      { t: "09:00", e: "10:00", k: "flex", l: "주간 업무 정리 + 잔여 task 점검" },
-      { t: "10:00", e: "11:00", k: "flex", l: "KMG 후속 처리 (계약·교육 정렬)" },
-      { t: "11:00", e: "12:00", k: "flex", l: "한화솔루션 follow-up" },
-      { t: "12:00", e: "13:00", k: "lunch" },
-      { t: "13:00", e: "14:00", k: "flex", l: "데이터분석과제 진척 점검" },
-      { t: "14:00", e: "15:00", k: "flex", l: "팀원 1on1 (선택)" },
-      { t: "15:00", e: "16:00", k: "flex", l: "차주 KMG 교육 1주차 준비" },
-      { t: "16:00", e: "17:00", k: "buffer", l: "주간 보고서 작성" },
-      { t: "17:00", e: "18:00", k: "flex", l: "차주 계획 + 일과 마무리" },
-    ] } },
-];
-
 // ── localStorage 영속화 ──
-function loadTasks() {
-  try { const raw = localStorage.getItem(STORAGE_KEY); if (raw) { const p = JSON.parse(raw); if (Array.isArray(p) && p.length > 0) return p; } } catch (e) {}
-  return SEED_TASKS.slice();
-}
-function saveTasksLocal() {
-  try { localStorage.setItem(STORAGE_KEY, JSON.stringify(tasks)); showSaveIndicator(); } catch (e) {}
-}
+function loadTasks() { try { const r = localStorage.getItem(STORAGE_KEY); if (r) { const p = JSON.parse(r); if (Array.isArray(p) && p.length > 0) return p; } } catch (e) {} return SEED_TASKS.slice(); }
+function saveTasksLocal() { try { localStorage.setItem(STORAGE_KEY, JSON.stringify(tasks)); showSaveIndicator(); } catch (e) {} }
 function saveTasks() { saveTasksLocal(); debouncedPushToGist(); }
-function resetTasks() {
-  if (!confirm("초기 상태(시드 10건)로 되돌리시겠습니까?")) return;
-  tasks = SEED_TASKS.slice(); saveTasks(); render(); showToast("초기 상태로 복원됨", "success");
-}
+function resetTasks() { if (!confirm("초기 상태(시드 10건)로 되돌리시겠습니까?")) return; tasks = SEED_TASKS.slice(); saveTasks(); render(); showToast("초기 상태로 복원됨", "success"); }
 let saveTimer = null;
-function showSaveIndicator() {
-  const el = document.querySelector(".save-indicator"); if (!el) return;
-  el.classList.add("show");
-  if (saveTimer) clearTimeout(saveTimer);
-  saveTimer = setTimeout(() => el.classList.remove("show"), 1200);
-}
+function showSaveIndicator() { /* placeholder for animation */ }
 
 // ── Gist 설정 ──
-function loadGistConfig() {
-  try { const raw = localStorage.getItem(GIST_CONFIG_KEY); return raw ? JSON.parse(raw) : null; } catch (e) { return null; }
-}
-function saveGistConfig(cfg) { localStorage.setItem(GIST_CONFIG_KEY, JSON.stringify(cfg)); }
+function loadGistConfig() { try { const r = localStorage.getItem(GIST_CONFIG_KEY); return r ? JSON.parse(r) : null; } catch (e) { return null; } }
+function saveGistConfig(c) { localStorage.setItem(GIST_CONFIG_KEY, JSON.stringify(c)); }
 function clearGistConfig() { localStorage.removeItem(GIST_CONFIG_KEY); }
 function isGistConfigured() { const c = loadGistConfig(); return !!(c && c.gistId && c.pat); }
+
+// ── Worker 설정 ──
+function loadWorkerConfig() { try { const r = localStorage.getItem(WORKER_CONFIG_KEY); return r ? JSON.parse(r) : null; } catch (e) { return null; } }
+function saveWorkerConfig(c) { localStorage.setItem(WORKER_CONFIG_KEY, JSON.stringify(c)); }
+function clearWorkerConfig() { localStorage.removeItem(WORKER_CONFIG_KEY); }
 
 // ── Gist 동기화 ──
 let gistETag = null;
 let lastGistUpdatedAt = null;
 let pushInProgress = false;
+let syncStatus = "unconfigured";
+let syncStatusMsg = "";
 
 async function pullFromGist(force) {
   const cfg = loadGistConfig();
@@ -368,31 +434,15 @@ async function pullFromGist(force) {
     if (gistETag && !force) headers["If-None-Match"] = gistETag;
     const resp = await fetch("https://api.github.com/gists/" + cfg.gistId, { headers });
     if (resp.status === 304) { setSyncStatus("synced"); return { unchanged: true }; }
-    if (!resp.ok) {
-      let msg = "HTTP " + resp.status;
-      try { const err = await resp.json(); msg = err.message || msg; } catch (e) {}
-      throw new Error(msg);
-    }
+    if (!resp.ok) { let m = "HTTP " + resp.status; try { const e = await resp.json(); m = e.message || m; } catch (e) {} throw new Error(m); }
     gistETag = resp.headers.get("ETag");
     const data = await resp.json();
     const filename = cfg.filename || "data.json";
-    const file = data.files[filename];
-    if (!file) throw new Error("파일 없음: " + filename);
-    let parsed;
-    try { parsed = JSON.parse(file.content); } catch (e) { throw new Error("JSON 파싱 실패"); }
+    const file = data.files[filename]; if (!file) throw new Error("파일 없음: " + filename);
+    let parsed; try { parsed = JSON.parse(file.content); } catch (e) { throw new Error("JSON 파싱 실패"); }
     setSyncStatus("synced");
-    return {
-      tasks: parsed.tasks || [],
-      updatedAt: parsed.updatedAt || data.updated_at,
-      device: parsed.device || "?",
-      gistUpdatedAt: data.updated_at,
-      raw: data
-    };
-  } catch (err) {
-    console.error("pullFromGist failed:", err);
-    setSyncStatus("error", err.message);
-    return null;
-  }
+    return { tasks: parsed.tasks || [], updatedAt: parsed.updatedAt || data.updated_at, device: parsed.device || "?", gistUpdatedAt: data.updated_at };
+  } catch (err) { console.error("pullFromGist failed:", err); setSyncStatus("error", err.message); return null; }
 }
 
 async function pushToGist() {
@@ -403,114 +453,71 @@ async function pushToGist() {
   try {
     setSyncStatus("syncing");
     const filename = cfg.filename || "data.json";
-    const payload = {
-      version: "S1",
-      updatedAt: new Date().toISOString(),
-      device: cfg.device || "unknown",
-      tasks: tasks
-    };
-    const body = { files: {} };
-    body.files[filename] = { content: JSON.stringify(payload, null, 2) };
+    const payload = { version: "S1", updatedAt: new Date().toISOString(), device: cfg.device || "unknown", tasks: tasks };
+    const body = { files: {} }; body.files[filename] = { content: JSON.stringify(payload, null, 2) };
     const resp = await fetch("https://api.github.com/gists/" + cfg.gistId, {
       method: "PATCH",
       headers: { "Authorization": "token " + cfg.pat, "Accept": "application/vnd.github+json", "Content-Type": "application/json" },
       body: JSON.stringify(body)
     });
-    if (!resp.ok) {
-      let msg = "HTTP " + resp.status;
-      try { const err = await resp.json(); msg = err.message || msg; } catch (e) {}
-      throw new Error(msg);
-    }
-    gistETag = resp.headers.get("ETag");
-    lastGistUpdatedAt = payload.updatedAt;
-    setSyncStatus("synced");
-    return true;
-  } catch (err) {
-    console.error("pushToGist failed:", err);
-    setSyncStatus("error", err.message);
-    return false;
-  } finally {
-    pushInProgress = false;
-  }
+    if (!resp.ok) { let m = "HTTP " + resp.status; try { const e = await resp.json(); m = e.message || m; } catch (e) {} throw new Error(m); }
+    gistETag = resp.headers.get("ETag"); lastGistUpdatedAt = payload.updatedAt;
+    setSyncStatus("synced"); return true;
+  } catch (err) { console.error("pushToGist failed:", err); setSyncStatus("error", err.message); return false; } finally { pushInProgress = false; }
 }
 
 let pushTimer = null;
-function debouncedPushToGist() {
-  if (!isGistConfigured()) return;
-  if (pushTimer) clearTimeout(pushTimer);
-  pushTimer = setTimeout(() => { pushToGist(); }, DEBOUNCE_PUSH_MS);
-}
+function debouncedPushToGist() { if (!isGistConfigured()) return; if (pushTimer) clearTimeout(pushTimer); pushTimer = setTimeout(() => { pushToGist(); }, DEBOUNCE_PUSH_MS); }
 
 let pollTimer = null;
 function startPolling() {
   if (pollTimer) clearInterval(pollTimer);
   pollTimer = setInterval(async () => {
     if (!isGistConfigured()) return;
-    if (pushInProgress) return;
-    if (pushTimer) return; // 푸시 대기 중일 때는 폴링 스킵
-    const result = await pullFromGist(false);
-    if (!result || result.unchanged) return;
-    if (result.updatedAt && lastGistUpdatedAt && result.updatedAt <= lastGistUpdatedAt) return;
-    if (JSON.stringify(result.tasks) === JSON.stringify(tasks)) {
-      lastGistUpdatedAt = result.updatedAt; return;
-    }
-    tasks = result.tasks;
-    lastGistUpdatedAt = result.updatedAt;
-    saveTasksLocal();
-    render();
-    showToast("☁ Gist에서 " + result.tasks.length + "건 동기화됨 (" + (result.device || "?") + ")", "success");
+    if (pushInProgress || pushTimer) return;
+    const r = await pullFromGist(false);
+    if (!r || r.unchanged) return;
+    if (r.updatedAt && lastGistUpdatedAt && r.updatedAt <= lastGistUpdatedAt) return;
+    if (JSON.stringify(r.tasks) === JSON.stringify(tasks)) { lastGistUpdatedAt = r.updatedAt; return; }
+    tasks = r.tasks; lastGistUpdatedAt = r.updatedAt; saveTasksLocal(); render();
+    showToast("☁ Gist에서 " + r.tasks.length + "건 동기화됨 (" + (r.device || "?") + ")", "success");
   }, POLL_INTERVAL_MS);
 }
 
 function setSyncStatus(status, msg) {
-  syncStatus = status;
-  syncStatusMsg = msg || "";
+  syncStatus = status; syncStatusMsg = msg || "";
   const el = document.querySelector(".sync-status");
   if (el) {
     el.className = "sync-status " + status;
-    const dot = el.querySelector(".sync-dot");
-    if (dot) dot.className = "sync-dot " + status;
+    const dot = el.querySelector(".sync-dot"); if (dot) dot.className = "sync-dot " + status;
     const text = el.querySelector(".sync-text");
     if (text) text.textContent = ({ unconfigured: "미연결", syncing: "동기화 중", synced: "동기화됨", error: "오류" })[status] || "?";
     if (msg) el.title = msg;
   }
 }
 
-let syncStatus = "unconfigured";
-let syncStatusMsg = "";
-
-// ── 동기화 코드 (S1: 형식, 수동 복사용) ──
+// ── S1 코덱 ──
 function encodeState() {
-  const compact = tasks.map(function (t) { return [t.id, t.p === "긴급" ? 0 : t.p === "보통" ? 1 : 2, t.title, t.due || "", t.createdAt || "", t.done ? 1 : 0, t.completedAt || ""]; });
+  const compact = tasks.map(t => [t.id, t.p === "긴급" ? 0 : t.p === "보통" ? 1 : 2, t.title, t.due || "", t.createdAt || "", t.done ? 1 : 0, t.completedAt || ""]);
   return SYNC_VERSION + ":" + btoa(unescape(encodeURIComponent(JSON.stringify(compact))));
 }
 function decodeState(code) {
   if (!code || typeof code !== "string") throw new Error("코드가 비어있습니다");
   let body = code.trim();
   if (body.indexOf(SYNC_VERSION + ":") === 0) body = body.substring(SYNC_VERSION.length + 1);
-  const hashIdx = body.indexOf("#s=");
-  if (hashIdx >= 0) body = body.substring(hashIdx + 3);
-  body = body.split(/\s/)[0];
-  if (!body) throw new Error("디코딩할 데이터 없음");
+  const hi = body.indexOf("#s="); if (hi >= 0) body = body.substring(hi + 3);
+  body = body.split(/\s/)[0]; if (!body) throw new Error("디코딩할 데이터 없음");
   const compact = JSON.parse(decodeURIComponent(escape(atob(body))));
   if (!Array.isArray(compact)) throw new Error("배열이 아님");
-  return compact.map(function (c) { return { id: c[0], p: c[1] === 0 ? "긴급" : c[1] === 1 ? "보통" : "여유", title: c[2], due: c[3] || null, createdAt: c[4] || null, done: c[5] === 1, completedAt: c[6] || null }; });
+  return compact.map(c => ({ id: c[0], p: c[1] === 0 ? "긴급" : c[1] === 1 ? "보통" : "여유", title: c[2], due: c[3] || null, createdAt: c[4] || null, done: c[5] === 1, completedAt: c[6] || null }));
 }
 
-function copySyncCode() {
-  const code = encodeState();
-  navigator.clipboard.writeText(code).then(() => showToast("📤 동기화 코드 복사됨", "success")).catch(() => showImportModal("복사", code, true));
-}
-function copyGistApiUrl() {
-  const cfg = loadGistConfig();
-  if (!cfg || !cfg.gistId) { showToast("Gist 미설정", "error"); return; }
-  const url = "https://api.github.com/gists/" + cfg.gistId;
-  navigator.clipboard.writeText(url).then(() => showToast("🔗 Gist API URL 복사됨 (Claude에 붙여넣기)", "success")).catch(() => showImportModal("복사", url, true));
-}
+function copySyncCode() { const code = encodeState(); navigator.clipboard.writeText(code).then(() => showToast("📤 동기화 코드 복사됨", "success")).catch(() => showImportModal("복사", code, true)); }
+function copyGistApiUrl() { const cfg = loadGistConfig(); if (!cfg || !cfg.gistId) { showToast("Gist 미설정", "error"); return; } const url = "https://api.github.com/gists/" + cfg.gistId; navigator.clipboard.writeText(url).then(() => showToast("🔗 Gist API URL 복사됨", "success")).catch(() => showImportModal("복사", url, true)); }
 function importSyncCode() { showImportModal(); }
 
 function showImportModal(mode, prefill, readonly) {
-  mode = mode || "import"; const isReadonly = !!readonly;
+  const isReadonly = !!readonly;
   const host = document.getElementById("modal-host");
   const title = isReadonly ? "📋 동기화 코드/URL" : "📥 Claude 동기화 코드 붙여넣기";
   const info = isReadonly ? "아래 텍스트를 복사해 Claude 채팅에 붙여넣으세요." : "Claude가 출력한 S1: 코드 또는 URL을 붙여넣으세요. 현재 데이터는 덮어써집니다.";
@@ -545,7 +552,7 @@ function applyImport() {
 
 function showToast(msg, kind) {
   const host = document.getElementById("toast-host");
-  const klass = kind === "error" ? "error" : kind === "success" ? "success" : "info";
+  const klass = kind === "error" ? "error" : kind === "success" ? "success" : "";
   host.innerHTML = '<div class="toast ' + klass + '">' + msg + '</div>';
   const el = host.querySelector(".toast");
   setTimeout(() => el.classList.add("show"), 10);
@@ -553,47 +560,168 @@ function showToast(msg, kind) {
   setTimeout(() => host.innerHTML = "", 3200);
 }
 
-// ── 설정 모달 (Gist + PAT) ──
-function showSettingsModal() {
+// ── 통합 설정 모달 (탭 구조: Gist / Worker / 북마크릿 / 단축어) ──
+let activeTab = "gist";
+function showSettingsModal(tab) {
+  activeTab = tab || activeTab || "gist";
   const cfg = loadGistConfig() || {};
-  const host = document.getElementById("modal-host");
+  const wcfg = loadWorkerConfig() || {};
   const apiUrl = cfg.gistId ? ("https://api.github.com/gists/" + cfg.gistId) : "";
+
+  const bmCode = "javascript:(async()=>{try{var c=await navigator.clipboard.readText();if(!c||c.indexOf('S1:')!==0){alert('클립보드에 S1: 코드가 없습니다');return;}window.open('" + SITE_ORIGIN + "/#s=' + encodeURIComponent(c.substring(3)) + '&auto=1','_blank');}catch(e){alert('클립보드 접근 실패: ' + e.message);}})();";
+
+  const host = document.getElementById("modal-host");
   host.innerHTML =
     '<div class="modal-backdrop" onclick="closeModal(event)">' +
       '<div class="modal" onclick="event.stopPropagation()">' +
-        '<div class="modal-header"><div class="modal-title">⚙ GitHub Gist 클라우드 동기화 설정</div><button class="modal-close" onclick="closeModal()">✕</button></div>' +
+        '<div class="modal-header"><div class="modal-title">⚙ 동기화 설정</div><button class="modal-close" onclick="closeModal()">✕</button></div>' +
+        '<div class="tabs">' +
+          '<button class="tab ' + (activeTab === "gist" ? "active" : "") + '" onclick="showSettingsModal(\'gist\')">☁ Gist</button>' +
+          '<button class="tab ' + (activeTab === "worker" ? "active" : "") + '" onclick="showSettingsModal(\'worker\')">⚡ Worker</button>' +
+          '<button class="tab ' + (activeTab === "bookmarklet" ? "active" : "") + '" onclick="showSettingsModal(\'bookmarklet\')">📌 북마크릿</button>' +
+          '<button class="tab ' + (activeTab === "shortcut" ? "active" : "") + '" onclick="showSettingsModal(\'shortcut\')">📱 iOS 단축어</button>' +
+        '</div>' +
         '<div class="modal-body">' +
-          '<div class="modal-info">PAT(Personal Access Token)는 브라우저 localStorage에만 저장됩니다. 외부로 전송되지 않습니다.</div>' +
-          '<div class="setup-step">' +
-            '<div class="setup-step-title"><span class="num">1</span> Gist 만들기 (한 번만)</div>' +
-            '<div class="modal-info">' +
-              '<a class="setup-link" href="https://gist.github.com/" target="_blank">https://gist.github.com/</a> 접속 → 파일명 <b>data.json</b>, 내용 아래 복사 → "Create secret gist" 권장' +
+          // Gist 탭
+          '<div class="tab-content ' + (activeTab === "gist" ? "active" : "") + '">' +
+            '<div class="modal-info">PAT(Personal Access Token)는 브라우저 localStorage에만 저장되며, 외부로 전송되지 않습니다.</div>' +
+            '<div class="setup-step"><div class="setup-step-title"><span class="num">1</span> Gist 만들기 (한 번만)</div><div class="modal-info"><a class="setup-link" href="https://gist.github.com/" target="_blank">https://gist.github.com/</a> → 파일명 <b>data.json</b>, "Create secret gist"</div><code class="setup-code">{"version":"S1","updatedAt":"2026-05-01T00:00:00Z","tasks":[]}</code></div>' +
+            '<div class="setup-step"><div class="setup-step-title"><span class="num">2</span> PAT 발급 (한 번만)</div><div class="modal-info"><a class="setup-link" href="https://github.com/settings/tokens/new" target="_blank">github.com/settings/tokens/new</a> → ✅ <b>gist 권한만</b></div></div>' +
+            '<div class="setup-step"><div class="setup-step-title"><span class="num">3</span> 입력</div>' +
+              '<div class="field-group" style="margin-top:9px"><div class="modal-label">Gist ID</div><input class="modal-input" id="cfg-gistId" value="' + (cfg.gistId || "") + '" placeholder="abc123def456..."></div>' +
+              '<div class="field-group" style="margin-top:9px"><div class="modal-label">PAT</div><input class="modal-input" id="cfg-pat" type="password" value="' + (cfg.pat || "") + '" placeholder="ghp_..."></div>' +
+              '<div class="field-group" style="margin-top:9px"><div class="modal-label">파일명</div><input class="modal-input" id="cfg-filename" value="' + (cfg.filename || "data.json") + '"></div>' +
+              '<div class="field-group" style="margin-top:9px"><div class="modal-label">기기 이름</div><input class="modal-input" id="cfg-device" value="' + (cfg.device || "iPad-Sir") + '"></div>' +
             '</div>' +
-            '<code class="setup-code">{"version":"S1","updatedAt":"2026-05-01T00:00:00Z","tasks":[]}</code>' +
-            '<div class="modal-info">생성된 URL <code class="setup-link">gist.github.com/{user}/<b>{이 부분이 Gist ID}</b></code> 복사</div>' +
-          '</div>' +
-          '<div class="setup-step">' +
-            '<div class="setup-step-title"><span class="num">2</span> PAT 발급 (한 번만)</div>' +
-            '<div class="modal-info">' +
-              '<a class="setup-link" href="https://github.com/settings/tokens/new" target="_blank">github.com/settings/tokens/new</a> 접속 → Note: <b>Sir Todo Sync</b> · Expiration: 1년 · ✅ <b>gist 권한만</b> 체크 → Generate token → 복사' +
+            (cfg.gistId ? '<div class="setup-step"><div class="setup-step-title"><span class="num">🔗</span> Claude API URL</div><code class="setup-code">' + apiUrl + '</code><button class="modal-btn primary" onclick="copyGistApiUrl()" style="margin-top:8px">📋 API URL 복사</button></div>' : "") +
+            '<div class="modal-actions">' +
+              (cfg.gistId ? '<button class="modal-btn danger" onclick="disconnectGist()">⚠ 연결 해제</button>' : '') +
+              '<button class="modal-btn secondary" onclick="closeModal()">취소</button>' +
+              '<button class="modal-btn github" onclick="testAndSaveGist()">🔌 테스트 + 저장</button>' +
             '</div>' +
           '</div>' +
-          '<div class="setup-step">' +
-            '<div class="setup-step-title"><span class="num">3</span> 입력</div>' +
-            '<div class="field-group" style="margin-top:7px"><div class="modal-label">Gist ID</div><input class="modal-input" id="cfg-gistId" value="' + (cfg.gistId || "") + '" placeholder="abc123def456..."><div class="field-hint">URL의 마지막 영숫자 부분</div></div>' +
-            '<div class="field-group" style="margin-top:7px"><div class="modal-label">PAT (Personal Access Token)</div><input class="modal-input password" id="cfg-pat" type="password" value="' + (cfg.pat || "") + '" placeholder="ghp_..."><div class="field-hint">localStorage에만 저장 · 절대 외부 전송 X</div></div>' +
-            '<div class="field-group" style="margin-top:7px"><div class="modal-label">파일명</div><input class="modal-input" id="cfg-filename" value="' + (cfg.filename || "data.json") + '" placeholder="data.json"></div>' +
-            '<div class="field-group" style="margin-top:7px"><div class="modal-label">기기 이름 (식별용)</div><input class="modal-input" id="cfg-device" value="' + (cfg.device || "iPad-Sir") + '" placeholder="예: iPad-Sir / Desktop-Office"></div>' +
+          // Worker 탭
+          '<div class="tab-content ' + (activeTab === "worker" ? "active" : "") + '">' +
+            '<div class="modal-info"><b>Cloudflare Worker</b>는 Claude가 직접 Gist를 갱신하도록 해주는 프록시입니다. Claude가 GET 호출 → Worker가 PATCH로 Gist 갱신 → 30초 내 모든 기기 동기화.</div>' +
+            '<div class="setup-step"><div class="setup-step-title"><span class="num">1</span> Cloudflare 계정</div><div class="modal-info"><a class="setup-link" href="https://dash.cloudflare.com/sign-up" target="_blank">dash.cloudflare.com/sign-up</a> 무료 가입 → Workers & Pages → Create Worker</div></div>' +
+            '<div class="setup-step"><div class="setup-step-title"><span class="num">2</span> Worker 코드 배포</div><div class="modal-info">아래 코드를 Worker 에디터에 붙여넣고 <b>Deploy</b>:</div><code class="setup-code long">' + esc(WORKER_CODE) + '</code><button class="modal-btn primary" onclick="copyWorkerCode()" style="margin-top:7px">📋 Worker 코드 복사</button></div>' +
+            '<div class="setup-step"><div class="setup-step-title"><span class="num">3</span> 환경변수 (Settings → Variables)</div>' +
+              '<div class="modal-info">Worker 설정에서 3개 환경변수 추가:<br>' +
+              '• <b>GIST_ID</b> = Gist ID (숨김 처리 권장)<br>' +
+              '• <b>GH_PAT</b> = PAT (Encrypt 체크)<br>' +
+              '• <b>SHARED_SECRET</b> = 랜덤 문자열 (예: <code>Sir-MX9k3p2L8v</code>)</div>' +
+            '</div>' +
+            '<div class="setup-step"><div class="setup-step-title"><span class="num">4</span> 입력</div>' +
+              '<div class="field-group" style="margin-top:9px"><div class="modal-label">Worker URL</div><input class="modal-input" id="wcfg-url" value="' + (wcfg.url || "") + '" placeholder="https://sir-todo.your-name.workers.dev"></div>' +
+              '<div class="field-group" style="margin-top:9px"><div class="modal-label">Shared Secret</div><input class="modal-input" id="wcfg-secret" type="password" value="' + (wcfg.secret || "") + '" placeholder="Sir-MX9k3p2L8v"></div>' +
+            '</div>' +
+            (wcfg.url ? '<div class="setup-step"><div class="setup-step-title"><span class="num">🤖</span> Claude에 알려줄 명령</div><code class="setup-code long">' + esc(buildClaudePrompt(wcfg.url, wcfg.secret)) + '</code><button class="modal-btn primary" onclick="copyClaudePrompt()" style="margin-top:7px">📋 Claude 프롬프트 복사</button></div>' : "") +
+            '<div class="modal-actions">' +
+              (wcfg.url ? '<button class="modal-btn danger" onclick="disconnectWorker()">⚠ 연결 해제</button>' : '') +
+              '<button class="modal-btn secondary" onclick="closeModal()">취소</button>' +
+              '<button class="modal-btn navy" onclick="testAndSaveWorker()">⚡ 테스트 + 저장</button>' +
+            '</div>' +
           '</div>' +
-          (cfg.gistId ? '<div class="setup-step"><div class="setup-step-title"><span class="num">🔗</span> Claude에 전달할 API URL</div><code class="setup-code">' + apiUrl + '</code><button class="modal-btn primary" onclick="copyGistApiUrl()" style="margin-top:6px">📋 API URL 복사 (Claude 붙여넣기용)</button></div>' : "") +
-          '<div class="modal-actions">' +
-            (cfg.gistId ? '<button class="modal-btn danger" onclick="disconnectGist()">⚠ 연결 해제</button>' : '') +
-            '<button class="modal-btn secondary" onclick="closeModal()">취소</button>' +
-            '<button class="modal-btn github" onclick="testAndSaveGist()">🔌 테스트 + 저장</button>' +
+          // Bookmarklet 탭
+          '<div class="tab-content ' + (activeTab === "bookmarklet" ? "active" : "") + '">' +
+            '<div class="modal-info"><b>북마크릿</b>: Claude 채팅에서 S1: 코드 복사 → 북마크 1번 클릭 → 자동 적용. 수동 가져오기보다 5초 빠릅니다.</div>' +
+            '<div class="setup-step"><div class="setup-step-title"><span class="num">1</span> 북마크 추가 (드래그)</div>' +
+              '<div class="modal-info">아래 버튼을 <b>브라우저 북마크바로 드래그</b>:</div>' +
+              '<div style="margin:14px 0;text-align:center"><a class="bookmarklet-link" href=\'' + esc(bmCode) + '\' onclick="event.preventDefault();showToast(\'드래그하여 북마크바에 추가하세요\', \'info\');">📌 Sir 할 일 동기화</a></div>' +
+              '<div class="modal-info">데스크톱: 북마크바에 직접 드래그. 모바일: 코드 복사 후 북마크 수동 추가.</div>' +
+            '</div>' +
+            '<div class="setup-step"><div class="setup-step-title"><span class="num">2</span> 사용</div><div class="modal-info">Claude 채팅에서 S1: 코드 복사 → 북마크 클릭 → 자동으로 사이트 열림 + 즉시 적용 + Gist 푸시</div></div>' +
+            '<div class="setup-step"><div class="setup-step-title"><span class="num">📋</span> 코드 (수동 추가용)</div><code class="setup-code long">' + esc(bmCode) + '</code><button class="modal-btn primary" onclick="copyBookmarklet()" style="margin-top:7px">📋 북마크릿 코드 복사</button></div>' +
+          '</div>' +
+          // Shortcut 탭
+          '<div class="tab-content ' + (activeTab === "shortcut" ? "active" : "") + '">' +
+            '<div class="modal-info"><b>iOS 단축어</b>: iPad/iPhone에서 클립보드의 S1 코드를 1탭으로 자동 적용. Safari에서 새 탭 + 자동 import 처리.</div>' +
+            '<div class="setup-step"><div class="setup-step-title"><span class="num">1</span> 단축어 앱 열기</div><div class="modal-info">iOS 기본앱 <b>단축어(Shortcuts)</b> → 우상단 <b>+</b></div></div>' +
+            '<div class="setup-step"><div class="setup-step-title"><span class="num">2</span> 액션 추가</div>' +
+              '<div class="modal-info"><b>액션 1</b>: "클립보드 가져오기" 추가</div>' +
+              '<div class="modal-info"><b>액션 2</b>: "URL" 추가 → 다음 입력:</div>' +
+              '<code class="setup-code">' + SITE_ORIGIN + '/#s=[클립보드]&auto=1</code>' +
+              '<div class="modal-info">(\"[클립보드]\" 부분은 변수 삽입 → "클립보드" 선택, S1: 접두 제거 위해 "텍스트 분할" 후 "S1:" 뒤만 사용)</div>' +
+              '<div class="modal-info"><b>액션 3</b>: "URL 열기" → URL 변수 연결</div>' +
+            '</div>' +
+            '<div class="setup-step"><div class="setup-step-title"><span class="num">3</span> 단축어 이름</div><div class="modal-info"><b>"Sir 할 일 동기화"</b> → 홈 화면 추가 또는 Siri 호출 ("헤이 시리, Sir 할 일 동기화")</div></div>' +
+            '<div class="setup-step"><div class="setup-step-title"><span class="num">⚙</span> URL 템플릿</div><code class="setup-code">' + SITE_ORIGIN + '/#s={CLIPBOARD_AFTER_S1:}&auto=1</code><div class="modal-info">대괄호 부분은 클립보드에서 "S1:" 뒤의 본문만 추출한 값</div></div>' +
+            '<div class="setup-step"><div class="setup-step-title"><span class="num">📲</span> 사용</div><div class="modal-info">Claude에서 S1: 코드 복사 → 단축어 실행 → Safari 자동 열림 → 즉시 적용 + Gist 푸시 → 30초 내 모든 기기 반영</div></div>' +
           '</div>' +
         '</div>' +
       '</div>' +
     '</div>';
+}
+
+// Worker 코드 (별도 배포용)
+const WORKER_CODE = `export default {
+  async fetch(request, env) {
+    const url = new URL(request.url);
+    const auth = url.searchParams.get('auth');
+    if (auth !== env.SHARED_SECRET) return new Response('forbidden', { status: 403 });
+
+    if (url.pathname === '/get') {
+      const r = await fetch('https://api.github.com/gists/' + env.GIST_ID, {
+        headers: { 'Authorization': 'token ' + env.GH_PAT, 'User-Agent': 'sir-worker', 'Accept': 'application/vnd.github+json' }
+      });
+      if (!r.ok) return new Response('gist fetch failed: ' + await r.text(), { status: 500 });
+      const d = await r.json();
+      const f = d.files['data.json'];
+      return new Response(f ? f.content : '{}', { headers: { 'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*' } });
+    }
+
+    if (url.pathname === '/update') {
+      const dataB64 = url.searchParams.get('data');
+      if (!dataB64) return new Response('missing data', { status: 400 });
+      let payload;
+      try { payload = JSON.parse(atob(dataB64)); }
+      catch (e) { return new Response('invalid: ' + e.message, { status: 400 }); }
+
+      const r = await fetch('https://api.github.com/gists/' + env.GIST_ID, {
+        method: 'PATCH',
+        headers: { 'Authorization': 'token ' + env.GH_PAT, 'Accept': 'application/vnd.github+json', 'Content-Type': 'application/json', 'User-Agent': 'sir-worker' },
+        body: JSON.stringify({ files: { 'data.json': { content: JSON.stringify(payload, null, 2) } } })
+      });
+      if (!r.ok) return new Response('gist update failed: ' + await r.text(), { status: 500 });
+      return new Response(JSON.stringify({ ok: true, count: (payload.tasks || []).length, ts: new Date().toISOString() }), {
+        headers: { 'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*' }
+      });
+    }
+
+    return new Response('not found', { status: 404 });
+  }
+};`;
+
+function copyWorkerCode() { navigator.clipboard.writeText(WORKER_CODE).then(() => showToast("📋 Worker 코드 복사됨", "success")); }
+
+function buildClaudePrompt(workerUrl, secret) {
+  return `[중요] 내 todo 동기화 시스템 정보:
+- Worker URL: ${workerUrl}
+- Shared Secret: ${secret || "[설정 안 됨]"}
+- 현재 데이터 조회: web_fetch GET ${workerUrl}/get?auth=${secret || "SECRET"}
+- 데이터 업데이트: web_fetch GET ${workerUrl}/update?auth=${secret || "SECRET"}&data=BASE64ENCODED_JSON
+
+JSON 형식 (data 파라미터에 base64 인코딩):
+{"version":"S1","updatedAt":"ISO8601","device":"Claude","tasks":[{"id":1,"p":"긴급|보통|여유","title":"...","due":"YYYY-MM-DD","createdAt":"YYYY-MM-DD","done":false,"completedAt":null}]}
+
+내가 변경 요청 시:
+1. /get으로 현재 데이터 조회
+2. 변경 적용 후 새 JSON 작성
+3. base64 인코딩 후 /update GET 호출
+4. 성공 응답 시 "✓ Gist 갱신 완료 (N건)" 보고
+
+이렇게 하면 모든 기기가 30초 내 자동 동기화됩니다.`;
+}
+
+function copyClaudePrompt() {
+  const wcfg = loadWorkerConfig() || {};
+  const p = buildClaudePrompt(wcfg.url || "", wcfg.secret || "");
+  navigator.clipboard.writeText(p).then(() => showToast("📋 Claude 프롬프트 복사됨", "success"));
+}
+
+function copyBookmarklet() {
+  const bmCode = "javascript:(async()=>{try{var c=await navigator.clipboard.readText();if(!c||c.indexOf('S1:')!==0){alert('클립보드에 S1: 코드가 없습니다');return;}window.open('" + SITE_ORIGIN + "/#s=' + encodeURIComponent(c.substring(3)) + '&auto=1','_blank');}catch(e){alert('클립보드 접근 실패: ' + e.message);}})();";
+  navigator.clipboard.writeText(bmCode).then(() => showToast("📋 북마크릿 코드 복사됨", "success"));
 }
 
 async function testAndSaveGist() {
@@ -602,27 +730,22 @@ async function testAndSaveGist() {
   const filename = document.getElementById("cfg-filename").value.trim() || "data.json";
   const device = document.getElementById("cfg-device").value.trim() || "unknown";
   if (!gistId) { showToast("Gist ID 필요", "error"); return; }
-  if (!pat) { showToast("PAT 필요 (쓰기용)", "error"); return; }
+  if (!pat) { showToast("PAT 필요", "error"); return; }
   showToast("🔌 연결 테스트 중...", "info");
   try {
     const resp = await fetch("https://api.github.com/gists/" + gistId, { headers: { "Authorization": "token " + pat, "Accept": "application/vnd.github+json" } });
-    if (!resp.ok) {
-      let msg = "HTTP " + resp.status;
-      try { const err = await resp.json(); msg = err.message || msg; } catch (e) {}
-      throw new Error(msg);
-    }
+    if (!resp.ok) { let m = "HTTP " + resp.status; try { const e = await resp.json(); m = e.message || m; } catch (e) {} throw new Error(m); }
     const data = await resp.json();
     const file = data.files[filename];
     saveGistConfig({ gistId, pat, filename, device });
     closeModal();
     if (file) {
-      let remoteData = null;
-      try { remoteData = JSON.parse(file.content); } catch (e) {}
+      let remoteData = null; try { remoteData = JSON.parse(file.content); } catch (e) {}
       if (remoteData && Array.isArray(remoteData.tasks) && remoteData.tasks.length > 0) {
-        if (confirm("Gist에 " + remoteData.tasks.length + "건의 데이터가 있습니다.\n[OK] = Gist 데이터로 덮어쓰기 (다른 기기와 동기화)\n[취소] = 로컬 데이터를 Gist에 푸시 (현재 기기 데이터 유지)")) {
+        if (confirm("Gist에 " + remoteData.tasks.length + "건의 데이터가 있습니다.\n[OK] = Gist 데이터로 덮어쓰기\n[취소] = 로컬 데이터를 Gist에 푸시")) {
           tasks = remoteData.tasks; saveTasksLocal(); lastGistUpdatedAt = remoteData.updatedAt;
           showToast("✓ Gist에서 " + tasks.length + "건 가져옴", "success"); render();
-        } else { await pushToGist(); showToast("✓ 로컬 " + tasks.length + "건을 Gist에 푸시", "success"); }
+        } else { await pushToGist(); showToast("✓ 로컬 " + tasks.length + "건 푸시", "success"); }
       } else { await pushToGist(); showToast("✓ 초기 푸시 완료 (" + tasks.length + "건)", "success"); }
     } else { await pushToGist(); showToast("✓ " + filename + " 신규 생성 완료", "success"); }
     startPolling(); render();
@@ -630,43 +753,74 @@ async function testAndSaveGist() {
 }
 
 function disconnectGist() {
-  if (!confirm("Gist 연결을 해제하시겠습니까?\n로컬 데이터는 유지됩니다.")) return;
+  if (!confirm("Gist 연결을 해제하시겠습니까? 로컬 데이터는 유지됩니다.")) return;
   clearGistConfig();
   if (pollTimer) clearInterval(pollTimer);
-  setSyncStatus("unconfigured");
-  closeModal(); render();
+  setSyncStatus("unconfigured"); closeModal(); render();
   showToast("Gist 연결 해제됨", "info");
 }
 
+async function testAndSaveWorker() {
+  const url = document.getElementById("wcfg-url").value.trim().replace(/\/$/, "");
+  const secret = document.getElementById("wcfg-secret").value.trim();
+  if (!url) { showToast("Worker URL 필요", "error"); return; }
+  if (!secret) { showToast("Shared Secret 필요", "error"); return; }
+  showToast("⚡ Worker 연결 테스트 중...", "info");
+  try {
+    const resp = await fetch(url + "/get?auth=" + encodeURIComponent(secret));
+    if (!resp.ok) { let m = "HTTP " + resp.status; try { const t = await resp.text(); m = t || m; } catch (e) {} throw new Error(m); }
+    saveWorkerConfig({ url, secret });
+    closeModal(); render();
+    showToast("✓ Worker 연결 성공", "success");
+    showSettingsModal("worker");
+  } catch (err) { showToast("❌ Worker 연결 실패: " + err.message, "error"); }
+}
+
+function disconnectWorker() {
+  if (!confirm("Worker 연결을 해제하시겠습니까?")) return;
+  clearWorkerConfig(); closeModal(); render();
+  showToast("Worker 연결 해제됨", "info");
+}
+
 async function manualSync() {
-  if (!isGistConfigured()) { showSettingsModal(); return; }
+  if (!isGistConfigured()) { showSettingsModal("gist"); return; }
   showToast("🔄 수동 동기화 중...", "info");
-  const result = await pullFromGist(true);
-  if (!result) return;
-  if (result.unchanged) { showToast("✓ 이미 최신 상태", "success"); return; }
-  if (JSON.stringify(result.tasks) !== JSON.stringify(tasks)) {
-    if (confirm("Gist 데이터가 다릅니다. Gist 데이터로 덮어쓰시겠습니까?\n[OK] = 가져오기 / [취소] = 로컬을 Gist에 푸시")) {
-      tasks = result.tasks; lastGistUpdatedAt = result.updatedAt; saveTasksLocal(); render();
+  const r = await pullFromGist(true);
+  if (!r) return;
+  if (r.unchanged) { showToast("✓ 이미 최신 상태", "success"); return; }
+  if (JSON.stringify(r.tasks) !== JSON.stringify(tasks)) {
+    if (confirm("Gist 데이터가 다릅니다.\n[OK] = 가져오기 / [취소] = 로컬을 Gist에 푸시")) {
+      tasks = r.tasks; lastGistUpdatedAt = r.updatedAt; saveTasksLocal(); render();
       showToast("✓ Gist에서 " + tasks.length + "건 가져옴", "success");
-    } else { await pushToGist(); showToast("✓ 로컬 " + tasks.length + "건을 Gist에 푸시", "success"); }
+    } else { await pushToGist(); showToast("✓ 로컬 " + tasks.length + "건 푸시", "success"); }
   } else { showToast("✓ 동기화됨 (변경 없음)", "success"); }
 }
 
 // ── 메인 상태 ──
 let tasks = loadTasks();
-let state = { filter: "전체", input: "", priority: "긴급", dueDate: "2026-05-08", selectedDay: "2026-05-08", editingId: null, eTitle: "", eP: "긴급", eDue: "" };
+let state = {
+  filter: "전체", input: "", priority: "긴급",
+  dueDate: (() => { const d = new Date(TODAY); d.setDate(d.getDate() + 7); return d.getFullYear() + "-" + String(d.getMonth() + 1).padStart(2, "0") + "-" + String(d.getDate()).padStart(2, "0"); })(),
+  selectedDay: TODAY_ISO,
+  editingId: null, eTitle: "", eP: "긴급", eDue: ""
+};
 
 const fmtDue = (iso) => { if (!iso) return "—"; const d = new Date(iso); return String(d.getMonth() + 1).padStart(2, "0") + "." + String(d.getDate()).padStart(2, "0"); };
 const daysBetween = (iso) => iso ? Math.floor((new Date(iso) - new Date(TODAY_ISO)) / 86400000) : null;
 const daysDiff = (a, b) => (a && b) ? Math.floor((new Date(b) - new Date(a)) / 86400000) : null;
-const esc = (s) => String(s == null ? "" : s).replace(/[&<>"']/g, (c) => ({"&":"&amp;","<":"&lt;",">":"&gt;","\"":"&quot;","'":"&#39;"}[c]));
+function esc(s) { return String(s == null ? "" : s).replace(/[&<>"']/g, (c) => ({"&":"&amp;","<":"&lt;",">":"&gt;","\"":"&quot;","'":"&#39;"}[c])); }
 
 function openInClaude(t) {
   const cfg = loadGistConfig();
+  const wcfg = loadWorkerConfig();
   const apiUrl = cfg && cfg.gistId ? ("https://api.github.com/gists/" + cfg.gistId) : "";
   const code = encodeState();
   let prompt = "다음 업무를 진행하려고 합니다. 함께 작업해주세요.\n\n업무: " + t.title + "\n우선순위: " + t.p + (t.due ? "\n마감일: " + fmtDue(t.due) : "") + (t.createdAt ? "\n입력일: " + fmtDue(t.createdAt) : "");
-  if (apiUrl) prompt += "\n\n[전체 할 일 — Gist API URL]\n" + apiUrl;
+  if (wcfg && wcfg.url) {
+    prompt += "\n\n[Worker 자동 동기화 — Claude가 직접 푸시 가능]\n" + buildClaudePrompt(wcfg.url, wcfg.secret);
+  } else if (apiUrl) {
+    prompt += "\n\n[전체 할 일 — Gist API URL]\n" + apiUrl;
+  }
   prompt += "\n\n[현재 상태 동기화 코드]\n" + code + "\n\n진행 방향과 필요한 산출물을 함께 정리해주세요.";
   window.open("https://claude.ai/new?q=" + encodeURIComponent(prompt), "_blank", "noopener,noreferrer");
 }
@@ -694,11 +848,11 @@ function dateBadgeHtml(t) {
   const overdue = dd !== null && dd < 0;
   return '<span class="date-badge ' + (overdue?"overdue":"") + '">' + fmtDue(t.due) + (overdue?' +' + Math.abs(dd) + 'd':"") + '</span>';
 }
-function checkboxHtml(checked, onclick) { return '<span class="checkbox ' + (checked?"checked":"") + '" onclick="event.stopPropagation();' + onclick + '">' + (checked?'<svg width="9" height="9" viewBox="0 0 9 9" fill="none"><path d="M1.5 4.5L3.5 6.5L7.5 2.5" stroke="#fff" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>':"") + '</span>'; }
+function checkboxHtml(checked, onclick) { return '<span class="checkbox ' + (checked?"checked":"") + '" onclick="event.stopPropagation();' + onclick + '">' + (checked?'<svg width="12" height="12" viewBox="0 0 9 9" fill="none"><path d="M1.5 4.5L3.5 6.5L7.5 2.5" stroke="#fff" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>':"") + '</span>'; }
 
 function taskRowHtml(t) {
   if (state.editingId === t.id) {
-    return '<div class="edit-row"><div class="edit-grid">' + checkboxHtml(t.done, "toggle(" + t.id + ")") + '<input class="edit-inp" id="e-title" value="' + esc(state.eTitle) + '" placeholder="할 일 제목" autofocus oninput="state.eTitle = this.value" onkeydown="if(event.key===\'Enter\'){event.preventDefault();saveEdit();}if(event.key===\'Escape\'){event.preventDefault();cancelEdit();}"><button class="edit-btn save" onclick="saveEdit()">✓</button><button class="edit-btn cancel" onclick="cancelEdit()">✕</button></div><div class="edit-meta"><select class="edit-inp" style="width:auto;padding:0 7px;flex:0 0 70px;font-weight:700;color:' + pcol(state.eP) + '" onchange="state.eP = this.value"><option ' + (state.eP==="긴급"?"selected":"") + '>긴급</option><option ' + (state.eP==="보통"?"selected":"") + '>보통</option><option ' + (state.eP==="여유"?"selected":"") + '>여유</option></select><input type="date" class="edit-inp" style="width:auto;padding:0 7px;flex:0 0 134px;color:var(--navy);font-weight:600;font-family:var(--fm);font-size:11px" value="' + esc(state.eDue) + '" onchange="state.eDue = this.value"><span style="font-size:8.5px;color:var(--muted);font-weight:600">⏎ 저장 · ESC 취소</span></div></div>';
+    return '<div class="edit-row"><div class="edit-grid">' + checkboxHtml(t.done, "toggle(" + t.id + ")") + '<input class="edit-inp" id="e-title" value="' + esc(state.eTitle) + '" placeholder="할 일 제목" autofocus oninput="state.eTitle = this.value" onkeydown="if(event.key===\'Enter\'){event.preventDefault();saveEdit();}if(event.key===\'Escape\'){event.preventDefault();cancelEdit();}"><button class="edit-btn save" onclick="saveEdit()">✓</button><button class="edit-btn cancel" onclick="cancelEdit()">✕</button></div><div class="edit-meta"><select class="edit-inp" style="width:auto;padding:0 9px;flex:0 0 80px;font-weight:700;color:' + pcol(state.eP) + '" onchange="state.eP = this.value"><option ' + (state.eP==="긴급"?"selected":"") + '>긴급</option><option ' + (state.eP==="보통"?"selected":"") + '>보통</option><option ' + (state.eP==="여유"?"selected":"") + '>여유</option></select><input type="date" class="edit-inp" style="width:auto;padding:0 9px;flex:0 0 160px;color:var(--navy);font-weight:600;font-family:var(--fm);font-size:13px" value="' + esc(state.eDue) + '" onchange="state.eDue = this.value"><span style="font-size:11px;color:var(--muted);font-weight:600">⏎ 저장 · ESC 취소</span></div></div>';
   }
   return '<div class="task-row ' + (t.done?"done":"") + '" onclick=\'openInClaude(' + JSON.stringify(t).replace(/'/g, "\\'") + ')\' title="' + esc(t.title) + '">' + checkboxHtml(t.done, "toggle(" + t.id + ")") + '<span class="pdot ' + pcls(t.p) + '"></span><span class="task-title">' + esc(t.title) + '</span>' + dateBadgeHtml(t) + '<span class="ico-btn edit" onclick=\'event.stopPropagation();startEdit(' + JSON.stringify(t).replace(/'/g, "\\'") + ')\' title="수정">✎</span><span class="ico-btn del" onclick="event.stopPropagation();remove(' + t.id + ')" title="삭제">✕</span></div>';
 }
@@ -715,6 +869,17 @@ function hourBlockHtml(b) {
   return '<div class="hour-block ' + cls + '"><span class="hb-time">' + b.t + ' <span class="arrow">→</span> ' + b.e + '</span><div class="hb-content">' + chip + '<span class="hb-title ' + b.k + '" title="' + esc(fullText) + '">' + esc(b.k === "lunch" ? "점심 시간" : b.l) + (b.loc?'<span class="hb-loc">· ' + esc(b.loc) + '</span>':"") + (b.note?'<span class="hb-note">(' + esc(b.note) + ')</span>':"") + '</span></div></div>';
 }
 
+function todayBadgeHtml() {
+  const dow = TODAY.getDay();
+  const isWeekend = dow === 0 || dow === 6;
+  const holiday = KOREAN_HOLIDAYS[TODAY_ISO];
+  let cls = "tb-date"; let icon = "📅";
+  if (holiday) { cls += " holiday"; icon = "🎌"; }
+  else if (isWeekend) { cls += " weekend"; icon = "🌿"; }
+  const dateStr = (TODAY.getMonth() + 1) + "/" + TODAY.getDate() + " " + KOREAN_WEEKDAY[dow];
+  return '<span class="' + cls + '">' + icon + ' ' + dateStr + (holiday ? " · " + holiday : "") + '</span>';
+}
+
 function render() {
   const total = tasks.length;
   const done = tasks.filter((t) => t.done).length;
@@ -728,7 +893,7 @@ function render() {
   const order = { 긴급: 0, 보통: 1, 여유: 2 };
   filtered.sort((a, b) => { if (a.done !== b.done) return a.done ? 1 : -1; const p = (order[a.p] != null ? order[a.p] : 9) - (order[b.p] != null ? order[b.p] : 9); if (p !== 0) return p; return (a.due || "").localeCompare(b.due || ""); });
 
-  const selected = calendar.find((d) => d.iso === state.selectedDay) || calendar[5];
+  const selected = calendar.find((d) => d.iso === state.selectedDay) || calendar[0];
   const meetingCount = selected.hourly && selected.hourly.kind === "blocks" ? selected.hourly.blocks.filter((b) => b.k === "meeting").length : 0;
   const taskCount = selected.hourly && selected.hourly.kind === "blocks" ? selected.hourly.blocks.filter((b) => b.k === "task").length : 0;
   const flexCount = selected.hourly && selected.hourly.kind === "blocks" ? selected.hourly.blocks.filter((b) => b.k === "flex").length : 0;
@@ -739,16 +904,16 @@ function render() {
   else if (selected.isOpenDay) { dayCardClass = "openday"; dayBarClass = "sage"; dayKickerClass = "sage"; }
 
   const taskListHtml = filtered.length > 0 ? filtered.map((t) => taskRowHtml(t)).join("") : '<div class="empty-state">' + (state.filter === "전체" ? "할 일이 없습니다." : state.filter + " 필터에 해당 항목 없음") + '</div>';
-
   const cfg = loadGistConfig();
+  const wcfg = loadWorkerConfig();
   const isConfigured = isGistConfigured();
   const currentStatus = isConfigured ? syncStatus : "unconfigured";
 
   document.getElementById("app").innerHTML =
     '<div class="topbar">' +
       '<div><div class="tb-kicker">Daily Brief · Sir</div><div class="tb-title">나의 할 일</div></div>' +
-      '<span class="tb-holiday">🎌 5/1 금 · 노동절</span>' +
-      '<span class="sync-status ' + currentStatus + '" onclick="manualSync()" title="' + (syncStatusMsg || "클릭하여 수동 동기화") + '">' +
+      todayBadgeHtml() +
+      '<span class="sync-status ' + currentStatus + '" onclick="manualSync()" title="' + (syncStatusMsg || "클릭=수동 동기화") + '">' +
         '<span class="sync-dot ' + currentStatus + '"></span>' +
         '<span class="sync-text">' + (({ unconfigured: "미연결", syncing: "동기화 중", synced: "동기화됨", error: "오류" })[currentStatus] || "?") + '</span>' +
       '</span>' +
@@ -759,15 +924,16 @@ function render() {
         '<div class="stat-mini"><span class="stat-mini-v" style="color:var(--amber)">' + urgent + '</span><span class="stat-mini-l">URG</span></div>' +
         '<div class="stat-mini"><span class="stat-mini-v" style="color:var(--sage)">' + done + '</span><span class="stat-mini-l">DONE</span></div>' +
       '</div>' +
-      '<button class="btn-settings" onclick="showSettingsModal()">⚙ 설정</button>' +
+      '<button class="btn-settings" onclick="showSettingsModal(\'gist\')">⚙ 설정</button>' +
     '</div>' +
     '<div class="sync-bar">' +
       '<span class="sync-label">Claude 동기화</span>' +
       '<button class="sync-btn primary" onclick="copySyncCode()">📤 코드 복사</button>' +
       (isConfigured ? '<button class="sync-btn" onclick="copyGistApiUrl()">🔗 Gist API URL</button>' : "") +
-      '<button class="sync-btn" onclick="importSyncCode()">📥 Claude에서 가져오기</button>' +
+      (wcfg && wcfg.url ? '<button class="sync-btn" onclick="copyClaudePrompt()">⚡ Worker 프롬프트</button>' : "") +
+      '<button class="sync-btn" onclick="importSyncCode()">📥 가져오기</button>' +
       '<button class="sync-btn" onclick="manualSync()">🔄 동기화</button>' +
-      '<span class="sync-info">' + tasks.length + '건' + (isConfigured ? " · " + (cfg.device || "?") : " · 로컬만") + '</span>' +
+      '<span class="sync-info">' + tasks.length + '건' + (isConfigured ? " · " + (cfg.device || "?") : " · 로컬만") + (wcfg && wcfg.url ? " · ⚡ Worker" : "") + '</span>' +
     '</div>' +
     '<div class="input-bar">' +
       '<input class="inp" placeholder="새로운 할 일" value="' + esc(state.input) + '" oninput="state.input = this.value" onkeydown="if(event.key===\'Enter\'){addTask();}">' +
@@ -780,13 +946,19 @@ function render() {
       '<button class="btn-reset" onclick="resetTasks()">⟲ 초기화</button>' +
     '</div>' +
     '<div class="week-strip">' +
-      calendar.map((d) => { const isSelected = d.iso === state.selectedDay; const evCount = d.hourly && d.hourly.kind === "blocks" ? d.hourly.blocks.filter((b) => b.k === "meeting").length : 0; const dotColor = d.isOpenDay ? "var(--sage)" : d.isToday ? "var(--rose)" : d.isHoliday || d.isCompanyOff ? "var(--amberLight)" : d.isWeekend ? "var(--faded)" : evCount > 0 ? "var(--navy)" : "var(--faded)"; const cls = "day-pill " + (isSelected?"selected":"") + " " + (d.isWeekend?"weekend":"") + " " + (d.isToday?"today":"") + " " + (d.isHoliday||d.isCompanyOff?"holiday":""); return '<div class="' + cls + '" onclick="state.selectedDay=\'' + d.iso + '\'; render()"><span class="wd">' + d.weekday + '</span><span class="dnum">' + d.date.split("/")[1] + '</span><span class="ddot" style="background:' + (isSelected?"var(--gold)":dotColor) + '"></span></div>'; }).join("") +
+      calendar.map((d) => {
+        const isSelected = d.iso === state.selectedDay;
+        const evCount = d.hourly && d.hourly.kind === "blocks" ? d.hourly.blocks.filter((b) => b.k === "meeting").length : 0;
+        const dotColor = d.isOpenDay ? "var(--sage)" : d.isToday ? "var(--rose)" : d.isHoliday || d.isCompanyOff ? "var(--amberLight)" : d.isWeekend ? "var(--faded)" : evCount > 0 ? "var(--navy)" : "var(--faded)";
+        const cls = "day-pill " + (isSelected?"selected":"") + " " + (d.isWeekend?"weekend":"") + " " + (d.isToday?"today":"") + " " + (d.isHoliday||d.isCompanyOff?"holiday":"");
+        return '<div class="' + cls + '" onclick="state.selectedDay=\'' + d.iso + '\'; render()"><span class="wd">' + d.weekday + '</span><span class="dnum">' + d.date.split("/")[1] + '</span><span class="ddot" style="background:' + (isSelected?"var(--gold)":dotColor) + '"></span></div>';
+      }).join("") +
     '</div>' +
     '<div class="main">' +
       '<div class="card">' +
         '<div class="st"><div class="st-l"><div class="st-bar navy"></div><div><div class="st-k navy">Tasks · → Claude</div><div class="st-t">할 일</div></div></div><div class="st-r"><div class="st-c navy">' + filtered.length + '</div><div class="st-h">' + (state.editingId ? "Edit" : state.filter !== "전체" ? state.filter : "Tap → Claude") + '</div></div></div>' +
         '<div class="task-list">' + taskListHtml + '</div>' +
-        '<div class="legend"><span>☐ 완료</span><span class="claude-tag">📎 클릭=Claude↗</span><span>✎ 수정</span><span>✕ 삭제</span><span style="margin-left:auto;color:var(--sage);font-weight:700">' + (isConfigured ? "☁ Gist 동기화 중" : "💾 로컬 저장") + '</span></div>' +
+        '<div class="legend"><span>☐ 완료</span><span class="claude-tag">📎 클릭=Claude↗</span><span>✎ 수정</span><span>✕ 삭제</span><span style="margin-left:auto;color:var(--sage);font-weight:700">' + (wcfg && wcfg.url ? "⚡ Worker + Gist" : isConfigured ? "☁ Gist 동기화" : "💾 로컬 저장") + '</span></div>' +
       '</div>' +
       '<div class="right-col">' +
         '<div class="day-card ' + dayCardClass + '">' +
@@ -800,27 +972,63 @@ function render() {
         '</div>' +
       '</div>' +
     '</div>' +
-    '<div class="footer"><span class="footer-brand">KOLON BENIT · 데이터분석팀</span><span class="footer-meta">' + (isConfigured ? "☁ Gist Cloud Sync" : "💾 Local-only") + ' · v20</span></div>';
+    '<div class="footer"><span class="footer-brand">KOLON BENIT · 데이터분석팀</span><span class="footer-meta">' + (wcfg && wcfg.url ? "⚡ Worker + ☁ Gist" : isConfigured ? "☁ Gist Cloud Sync" : "💾 Local-only") + ' · v21 · ' + TODAY_ISO + '</span></div>';
 
   if (state.editingId) { const inp = document.getElementById("e-title"); if (inp) { inp.focus(); inp.setSelectionRange(inp.value.length, inp.value.length); } }
 }
 
+// ── URL Hash 자동 적용 (북마크릿/단축어용) ──
+function tryLoadFromUrlHash() {
+  try {
+    const hash = window.location.hash;
+    const params = new URLSearchParams(hash.startsWith("#") ? hash.substring(1) : hash);
+    const sCode = params.get("s");
+    const autoApply = params.get("auto") === "1";
+    if (!sCode) return false;
+    const code = SYNC_VERSION + ":" + sCode;
+    const incoming = decodeState(code);
+    const apply = autoApply || confirm("URL에서 동기화 데이터 감지됨. 적용하시겠습니까?");
+    if (apply) {
+      tasks = incoming;
+      saveTasks(); render();
+      showToast("✓ URL에서 " + tasks.length + "건 자동 적용", "success");
+      history.replaceState(null, "", window.location.pathname + window.location.search);
+      return true;
+    }
+  } catch (e) { console.warn("URL hash parse failed:", e); }
+  return false;
+}
+
+// ── postMessage 수신 (iframe/iOS Shortcut 지원) ──
+window.addEventListener("message", (e) => {
+  if (e.data && e.data.type === "SIR_TODO_SYNC" && e.data.code) {
+    try {
+      const incoming = decodeState(e.data.code);
+      tasks = incoming; saveTasks(); render();
+      showToast("✓ 외부 메시지에서 " + tasks.length + "건 동기화", "success");
+    } catch (err) { showToast("❌ postMessage 파싱 실패", "error"); }
+  }
+});
+
 // ── 초기화 ──
 async function bootstrap() {
+  const fromHash = tryLoadFromUrlHash();
   render();
-  if (isGistConfigured()) {
+  if (isGistConfigured() && !fromHash) {
     setSyncStatus("syncing");
-    const result = await pullFromGist(true);
-    if (result && !result.unchanged) {
-      if (result.tasks.length > 0 && JSON.stringify(result.tasks) !== JSON.stringify(tasks)) {
-        tasks = result.tasks; lastGistUpdatedAt = result.updatedAt; saveTasksLocal(); render();
-        showToast("☁ Gist에서 " + tasks.length + "건 로드됨", "success");
-      }
+    const r = await pullFromGist(true);
+    if (r && !r.unchanged && r.tasks.length > 0 && JSON.stringify(r.tasks) !== JSON.stringify(tasks)) {
+      tasks = r.tasks; lastGistUpdatedAt = r.updatedAt; saveTasksLocal(); render();
+      showToast("☁ Gist에서 " + tasks.length + "건 로드됨", "success");
     }
     startPolling();
-  } else { setSyncStatus("unconfigured"); }
+  } else if (isGistConfigured()) { startPolling(); }
+  else { setSyncStatus("unconfigured"); }
 }
 bootstrap();
+
+// ── 24시간 후 자동 새로고침 (날짜 갱신용) ──
+setTimeout(() => location.reload(), 24 * 60 * 60 * 1000);
 </script>
 </body>
 </html>

@@ -270,9 +270,10 @@
 
 // ── 상수 ──
 const STORAGE_KEY = "sir_todo_v1";
+const CALENDAR_KEY = "sir_calendar_v1";
 const GIST_CONFIG_KEY = "sir_todo_gist_config_v1";
 const WORKER_CONFIG_KEY = "sir_todo_worker_config_v1";
-const SYNC_VERSION = "S1";
+const SYNC_VERSION = "S2";
 const POLL_INTERVAL_MS = 30000;
 const DEBOUNCE_PUSH_MS = 1500;
 const SITE_ORIGIN = window.location.origin + window.location.pathname.replace(/\/$/, "");
@@ -299,8 +300,8 @@ const KOREAN_HOLIDAYS = {
   "2026-12-25": "크리스마스",
 };
 
-// 사전 정의된 캘린더 이벤트 (날짜별 이벤트가 있는 경우)
-const calendarEvents = {
+// 사전 정의된 캘린더 이벤트 (기본값 — Gist 데이터로 덮어씌워짐)
+const DEFAULT_CALENDAR_EVENTS = {
   "2026-05-04": { isCompanyOff: true, offName: "공동연차",
     hourly: { kind: "blocks", blocks: [
       { t: "09:00", e: "10:00", k: "task", p: "긴급", l: "KII 보고자료 점검" },
@@ -346,7 +347,39 @@ const calendarEvents = {
       { t: "16:00", e: "17:00", k: "buffer", l: "주간 보고서 작성" },
       { t: "17:00", e: "18:00", k: "flex", l: "차주 계획 + 일과 마무리" },
     ] } },
+  // ── 다음 4주 정기 일정 (자동 사전 채움) ──
+  "2026-05-13": { hourly: { kind: "blocks", blocks: [
+      { t: "09:00", e: "12:00", k: "buffer", l: "오전 업무" },
+      { t: "12:00", e: "13:00", k: "lunch" },
+      { t: "13:00", e: "14:00", k: "buffer", l: "회의 준비" },
+      { t: "14:00", e: "15:00", k: "meeting", l: "DX본부 주간회의", loc: "10층 1007호" },
+      { t: "15:00", e: "18:00", k: "buffer", l: "오후 업무" },
+    ] } },
+  "2026-05-20": { hourly: { kind: "blocks", blocks: [
+      { t: "09:00", e: "12:00", k: "buffer", l: "오전 업무" },
+      { t: "12:00", e: "13:00", k: "lunch" },
+      { t: "13:00", e: "14:00", k: "buffer", l: "회의 준비" },
+      { t: "14:00", e: "15:00", k: "meeting", l: "DX본부 주간회의", loc: "10층 1007호" },
+      { t: "15:00", e: "18:00", k: "buffer", l: "오후 업무" },
+    ] } },
+  "2026-05-27": { hourly: { kind: "blocks", blocks: [
+      { t: "09:00", e: "12:00", k: "buffer", l: "오전 업무" },
+      { t: "12:00", e: "13:00", k: "lunch" },
+      { t: "13:00", e: "14:00", k: "buffer", l: "회의 준비" },
+      { t: "14:00", e: "15:00", k: "meeting", l: "DX본부 주간회의", loc: "10층 1007호" },
+      { t: "15:00", e: "18:00", k: "buffer", l: "오후 업무" },
+    ] } },
+  "2026-06-03": { hourly: { kind: "blocks", blocks: [
+      { t: "09:00", e: "12:00", k: "buffer", l: "오전 업무" },
+      { t: "12:00", e: "13:00", k: "lunch" },
+      { t: "13:00", e: "14:00", k: "buffer", l: "회의 준비" },
+      { t: "14:00", e: "15:00", k: "meeting", l: "DX본부 주간회의", loc: "10층 1007호" },
+      { t: "15:00", e: "18:00", k: "buffer", l: "오후 업무" },
+    ] } },
 };
+
+// 동적 캘린더 events: 기본값 + Gist override 병합
+let calendarEvents = JSON.parse(JSON.stringify(DEFAULT_CALENDAR_EVENTS));
 
 // 동적 캘린더 생성 (오늘부터 7일)
 function generateCalendar() {
@@ -401,6 +434,27 @@ const SEED_TASKS = [
 // ── localStorage 영속화 ──
 function loadTasks() { try { const r = localStorage.getItem(STORAGE_KEY); if (r) { const p = JSON.parse(r); if (Array.isArray(p) && p.length > 0) return p; } } catch (e) {} return SEED_TASKS.slice(); }
 function saveTasksLocal() { try { localStorage.setItem(STORAGE_KEY, JSON.stringify(tasks)); showSaveIndicator(); } catch (e) {} }
+
+function loadCalendarOverrides() {
+  try { const r = localStorage.getItem(CALENDAR_KEY); if (r) return JSON.parse(r); } catch (e) {}
+  return {};
+}
+function saveCalendarOverridesLocal() {
+  try { localStorage.setItem(CALENDAR_KEY, JSON.stringify(calendarOverrides)); } catch (e) {}
+}
+function applyCalendarOverrides() {
+  // 기본값 + 사용자/Gist override 병합
+  calendarEvents = JSON.parse(JSON.stringify(DEFAULT_CALENDAR_EVENTS));
+  for (const iso in calendarOverrides) {
+    if (calendarOverrides[iso] === null) {
+      // null = 해당 날짜 일정 삭제 (기본값도 무시)
+      delete calendarEvents[iso];
+    } else {
+      calendarEvents[iso] = calendarOverrides[iso];
+    }
+  }
+  calendar = generateCalendar();
+}
 function saveTasks() { saveTasksLocal(); debouncedPushToGist(); }
 function resetTasks() { if (!confirm("초기 상태(시드 10건)로 되돌리시겠습니까?")) return; tasks = SEED_TASKS.slice(); saveTasks(); render(); showToast("초기 상태로 복원됨", "success"); }
 let saveTimer = null;
@@ -441,7 +495,13 @@ async function pullFromGist(force) {
     const file = data.files[filename]; if (!file) throw new Error("파일 없음: " + filename);
     let parsed; try { parsed = JSON.parse(file.content); } catch (e) { throw new Error("JSON 파싱 실패"); }
     setSyncStatus("synced");
-    return { tasks: parsed.tasks || [], updatedAt: parsed.updatedAt || data.updated_at, device: parsed.device || "?", gistUpdatedAt: data.updated_at };
+    return {
+      tasks: parsed.tasks || [],
+      calendar: parsed.calendar || null,
+      updatedAt: parsed.updatedAt || data.updated_at,
+      device: parsed.device || "?",
+      gistUpdatedAt: data.updated_at
+    };
   } catch (err) { console.error("pullFromGist failed:", err); setSyncStatus("error", err.message); return null; }
 }
 
@@ -453,7 +513,13 @@ async function pushToGist() {
   try {
     setSyncStatus("syncing");
     const filename = cfg.filename || "data.json";
-    const payload = { version: "S1", updatedAt: new Date().toISOString(), device: cfg.device || "unknown", tasks: tasks };
+    const payload = {
+      version: "S2",
+      updatedAt: new Date().toISOString(),
+      device: cfg.device || "unknown",
+      tasks: tasks,
+      calendar: calendarOverrides
+    };
     const body = { files: {} }; body.files[filename] = { content: JSON.stringify(payload, null, 2) };
     const resp = await fetch("https://api.github.com/gists/" + cfg.gistId, {
       method: "PATCH",
@@ -478,9 +544,24 @@ function startPolling() {
     const r = await pullFromGist(false);
     if (!r || r.unchanged) return;
     if (r.updatedAt && lastGistUpdatedAt && r.updatedAt <= lastGistUpdatedAt) return;
-    if (JSON.stringify(r.tasks) === JSON.stringify(tasks)) { lastGistUpdatedAt = r.updatedAt; return; }
-    tasks = r.tasks; lastGistUpdatedAt = r.updatedAt; saveTasksLocal(); render();
-    showToast("☁ Gist에서 " + r.tasks.length + "건 동기화됨 (" + (r.device || "?") + ")", "success");
+    let changed = false;
+    if (JSON.stringify(r.tasks) !== JSON.stringify(tasks)) {
+      tasks = r.tasks; saveTasksLocal();
+      changed = true;
+    }
+    if (r.calendar && typeof r.calendar === "object" && JSON.stringify(r.calendar) !== JSON.stringify(calendarOverrides)) {
+      calendarOverrides = r.calendar;
+      saveCalendarOverridesLocal();
+      applyCalendarOverrides();
+      changed = true;
+    }
+    if (changed) {
+      lastGistUpdatedAt = r.updatedAt;
+      render();
+      showToast("☁ Gist에서 동기화됨 (" + r.tasks.length + "건, " + (r.device || "?") + ")", "success");
+    } else {
+      lastGistUpdatedAt = r.updatedAt;
+    }
   }, POLL_INTERVAL_MS);
 }
 
@@ -496,20 +577,38 @@ function setSyncStatus(status, msg) {
   }
 }
 
-// ── S1 코덱 ──
+// ── S2 코덱 (tasks + calendar) ──
 function encodeState() {
-  const compact = tasks.map(t => [t.id, t.p === "긴급" ? 0 : t.p === "보통" ? 1 : 2, t.title, t.due || "", t.createdAt || "", t.done ? 1 : 0, t.completedAt || ""]);
-  return SYNC_VERSION + ":" + btoa(unescape(encodeURIComponent(JSON.stringify(compact))));
+  const compactTasks = tasks.map(t => [t.id, t.p === "긴급" ? 0 : t.p === "보통" ? 1 : 2, t.title, t.due || "", t.createdAt || "", t.done ? 1 : 0, t.completedAt || ""]);
+  // S2 = {t: tasks, c: calendar overrides}
+  const payload = { t: compactTasks, c: calendarOverrides };
+  return SYNC_VERSION + ":" + btoa(unescape(encodeURIComponent(JSON.stringify(payload))));
 }
 function decodeState(code) {
   if (!code || typeof code !== "string") throw new Error("코드가 비어있습니다");
   let body = code.trim();
-  if (body.indexOf(SYNC_VERSION + ":") === 0) body = body.substring(SYNC_VERSION.length + 1);
+  let detectedVersion = SYNC_VERSION;
+  // S1 또는 S2 prefix 자동 감지
+  if (body.indexOf("S1:") === 0) { detectedVersion = "S1"; body = body.substring(3); }
+  else if (body.indexOf("S2:") === 0) { detectedVersion = "S2"; body = body.substring(3); }
   const hi = body.indexOf("#s="); if (hi >= 0) body = body.substring(hi + 3);
   body = body.split(/\s/)[0]; if (!body) throw new Error("디코딩할 데이터 없음");
-  const compact = JSON.parse(decodeURIComponent(escape(atob(body))));
-  if (!Array.isArray(compact)) throw new Error("배열이 아님");
-  return compact.map(c => ({ id: c[0], p: c[1] === 0 ? "긴급" : c[1] === 1 ? "보통" : "여유", title: c[2], due: c[3] || null, createdAt: c[4] || null, done: c[5] === 1, completedAt: c[6] || null }));
+  const decoded = JSON.parse(decodeURIComponent(escape(atob(body))));
+  // S1 = 배열 (tasks only) — backward compat
+  if (Array.isArray(decoded)) {
+    return {
+      tasks: decoded.map(c => ({ id: c[0], p: c[1] === 0 ? "긴급" : c[1] === 1 ? "보통" : "여유", title: c[2], due: c[3] || null, createdAt: c[4] || null, done: c[5] === 1, completedAt: c[6] || null })),
+      calendar: null
+    };
+  }
+  // S2 = 객체 {t, c}
+  if (decoded && Array.isArray(decoded.t)) {
+    return {
+      tasks: decoded.t.map(c => ({ id: c[0], p: c[1] === 0 ? "긴급" : c[1] === 1 ? "보통" : "여유", title: c[2], due: c[3] || null, createdAt: c[4] || null, done: c[5] === 1, completedAt: c[6] || null })),
+      calendar: decoded.c || null
+    };
+  }
+  throw new Error("형식 오류");
 }
 
 function copySyncCode() { const code = encodeState(); navigator.clipboard.writeText(code).then(() => showToast("📤 동기화 코드 복사됨", "success")).catch(() => showImportModal("복사", code, true)); }
@@ -544,9 +643,17 @@ function applyImport() {
   const code = ta.value.trim(); if (!code) { showToast("코드가 비어있음", "error"); return; }
   try {
     const incoming = decodeState(code);
-    if (!Array.isArray(incoming) || incoming.length === 0) throw new Error("유효하지 않은 코드");
-    tasks = incoming; saveTasks(); closeModal(); render();
-    showToast("✓ Claude 데이터 적용됨 (" + incoming.length + "건)", "success");
+    if (!incoming || !Array.isArray(incoming.tasks) || incoming.tasks.length === 0) throw new Error("유효하지 않은 코드");
+    tasks = incoming.tasks;
+    let calChanged = false;
+    if (incoming.calendar && typeof incoming.calendar === "object") {
+      calendarOverrides = incoming.calendar;
+      saveCalendarOverridesLocal();
+      applyCalendarOverrides();
+      calChanged = true;
+    }
+    saveTasks(); closeModal(); render();
+    showToast("✓ Claude 데이터 적용됨 (" + incoming.tasks.length + "건" + (calChanged ? " + 캘린더" : "") + ")", "success");
   } catch (err) { showToast("❌ 파싱 실패: " + err.message, "error"); }
 }
 
@@ -798,6 +905,8 @@ async function manualSync() {
 
 // ── 메인 상태 ──
 let tasks = loadTasks();
+let calendarOverrides = loadCalendarOverrides();
+applyCalendarOverrides();
 let state = {
   filter: "전체", input: "", priority: "긴급",
   dueDate: (() => { const d = new Date(TODAY); d.setDate(d.getDate() + 7); return d.getFullYear() + "-" + String(d.getMonth() + 1).padStart(2, "0") + "-" + String(d.getDate()).padStart(2, "0"); })(),
@@ -972,7 +1081,7 @@ function render() {
         '</div>' +
       '</div>' +
     '</div>' +
-    '<div class="footer"><span class="footer-brand">KOLON BENIT · 데이터분석팀</span><span class="footer-meta">' + (wcfg && wcfg.url ? "⚡ Worker + ☁ Gist" : isConfigured ? "☁ Gist Cloud Sync" : "💾 Local-only") + ' · v21 · ' + TODAY_ISO + '</span></div>';
+    '<div class="footer"><span class="footer-brand">KOLON BENIT · 데이터분석팀</span><span class="footer-meta">' + (wcfg && wcfg.url ? "⚡ Worker + ☁ Gist" : isConfigured ? "☁ Gist Cloud Sync" : "💾 Local-only") + ' · v22 · ' + TODAY_ISO + '</span></div>';
 
   if (state.editingId) { const inp = document.getElementById("e-title"); if (inp) { inp.focus(); inp.setSelectionRange(inp.value.length, inp.value.length); } }
 }
@@ -983,15 +1092,30 @@ function tryLoadFromUrlHash() {
     const hash = window.location.hash;
     const params = new URLSearchParams(hash.startsWith("#") ? hash.substring(1) : hash);
     const sCode = params.get("s");
+    const s2Code = params.get("s2");
     const autoApply = params.get("auto") === "1";
-    if (!sCode) return false;
-    const code = SYNC_VERSION + ":" + sCode;
-    const incoming = decodeState(code);
+    if (!sCode && !s2Code) return false;
+    // s2 우선, 없으면 s를 SYNC_VERSION으로 시도
+    const code = s2Code ? "S2:" + s2Code : (sCode.indexOf("ey") === 0 || sCode.length > 100 ? "S2:" : "S1:") + sCode;
+    let incoming;
+    try { incoming = decodeState(code); }
+    catch (e) {
+      // S2:로 파싱 실패 시 S1:로 재시도
+      try { incoming = decodeState("S1:" + sCode); }
+      catch (e2) { throw e; }
+    }
     const apply = autoApply || confirm("URL에서 동기화 데이터 감지됨. 적용하시겠습니까?");
     if (apply) {
-      tasks = incoming;
+      tasks = incoming.tasks;
+      let calChanged = false;
+      if (incoming.calendar && typeof incoming.calendar === "object") {
+        calendarOverrides = incoming.calendar;
+        saveCalendarOverridesLocal();
+        applyCalendarOverrides();
+        calChanged = true;
+      }
       saveTasks(); render();
-      showToast("✓ URL에서 " + tasks.length + "건 자동 적용", "success");
+      showToast("✓ URL 자동 적용 (" + tasks.length + "건" + (calChanged ? " + 캘린더" : "") + ")", "success");
       history.replaceState(null, "", window.location.pathname + window.location.search);
       return true;
     }
@@ -1004,8 +1128,17 @@ window.addEventListener("message", (e) => {
   if (e.data && e.data.type === "SIR_TODO_SYNC" && e.data.code) {
     try {
       const incoming = decodeState(e.data.code);
-      tasks = incoming; saveTasks(); render();
-      showToast("✓ 외부 메시지에서 " + tasks.length + "건 동기화", "success");
+      if (!incoming || !Array.isArray(incoming.tasks)) throw new Error("형식 오류");
+      tasks = incoming.tasks;
+      let calChanged = false;
+      if (incoming.calendar && typeof incoming.calendar === "object") {
+        calendarOverrides = incoming.calendar;
+        saveCalendarOverridesLocal();
+        applyCalendarOverrides();
+        calChanged = true;
+      }
+      saveTasks(); render();
+      showToast("✓ 외부 메시지 동기화 (" + tasks.length + "건" + (calChanged ? " + 캘린더" : "") + ")", "success");
     } catch (err) { showToast("❌ postMessage 파싱 실패", "error"); }
   }
 });
@@ -1017,9 +1150,23 @@ async function bootstrap() {
   if (isGistConfigured() && !fromHash) {
     setSyncStatus("syncing");
     const r = await pullFromGist(true);
-    if (r && !r.unchanged && r.tasks.length > 0 && JSON.stringify(r.tasks) !== JSON.stringify(tasks)) {
-      tasks = r.tasks; lastGistUpdatedAt = r.updatedAt; saveTasksLocal(); render();
-      showToast("☁ Gist에서 " + tasks.length + "건 로드됨", "success");
+    if (r && !r.unchanged && r.tasks.length > 0) {
+      let changed = false;
+      if (JSON.stringify(r.tasks) !== JSON.stringify(tasks)) {
+        tasks = r.tasks; saveTasksLocal();
+        changed = true;
+      }
+      if (r.calendar && typeof r.calendar === "object" && JSON.stringify(r.calendar) !== JSON.stringify(calendarOverrides)) {
+        calendarOverrides = r.calendar;
+        saveCalendarOverridesLocal();
+        applyCalendarOverrides();
+        changed = true;
+      }
+      if (changed) {
+        lastGistUpdatedAt = r.updatedAt;
+        render();
+        showToast("☁ Gist에서 동기화됨 (" + tasks.length + "건)", "success");
+      }
     }
     startPolling();
   } else if (isGistConfigured()) { startPolling(); }

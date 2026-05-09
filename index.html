@@ -4,7 +4,7 @@
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 <meta name="theme-color" content="#F5F7FA" />
-<title>Sir's Tasks · v18</title>
+<title>Sir's Tasks · v19</title>
 <link href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable.min.css" rel="stylesheet">
 <style>
 :root{
@@ -152,6 +152,9 @@ button{font:inherit;cursor:pointer;border:none;background:none;color:inherit}
 .cap-row{display:flex;justify-content:space-between;align-items:baseline;margin-bottom:6px;font-size:11.5px;flex-wrap:wrap;gap:4px}
 .cap-row .l{color:var(--t2);font-weight:500}
 .cap-row .r{color:var(--t2);display:flex;flex-wrap:wrap;gap:8px}
+.allday-bar{display:flex;flex-wrap:wrap;gap:6px;padding:7px 10px;background:var(--c-emr-s);border:1px solid #C7D2FE;border-radius:8px;margin-bottom:10px;align-items:center}
+.allday-bar .label{font-family:var(--font-mono);font-size:9.5px;font-weight:600;color:var(--c-emr);letter-spacing:.12em;text-transform:uppercase;margin-right:2px}
+.allday-chip{display:inline-flex;align-items:center;padding:2px 8px;background:var(--surface);border-radius:4px;color:var(--c-emr);font-weight:600;font-size:11.5px;border:1px solid #C7D2FE;letter-spacing:-.005em}
 .cap-row .r .seg{display:inline-flex;align-items:center;gap:3px}
 .cap-row .r .seg::before{content:'';width:8px;height:8px;border-radius:2px;display:inline-block}
 .cap-row .r .seg.busy::before{background:var(--c-emr)}
@@ -348,18 +351,21 @@ const SEED={
     {id:'t9',title:'Tampermonkey 유저스크립트 첫 동기화 검증',due:'2026-05-09',priority:'normal',done:true,duration:15,category:'DEV',createdAt:'2026-05-08'}
   ],
   events:[
-    {date:'2026-05-11',time:'10:00',title:'제조DX 영업회의',duration:90,type:'outlook',color:'event'},
-    {date:'2026-05-11',time:'13:30',title:'DX본부 주간회의',duration:60,type:'outlook',color:'event'},
+    // 5/11 (월)
+    {date:'2026-05-11',time:'09:30',title:'데이터플랫폼 권한회의',duration:60,type:'outlook',color:'event'},
+    {date:'2026-05-11',time:'10:30',title:'제조DX 영업회의',duration:90,type:'outlook',color:'event'},
+    {date:'2026-05-11',time:'14:30',title:'DX본부 주간회의',duration:60,type:'outlook',color:'event'},
     {date:'2026-05-11',time:'16:00',title:'KMG 인사팀 분석과제 인터뷰',duration:60,type:'outlook',color:'event'},
-    {date:'2026-05-13',time:'14:00',title:'DX본부 주간회의',duration:60,type:'outlook',color:'event'},
-    {date:'2026-05-14',time:'10:00',title:'KMG DX 교육 Day 1',duration:480,type:'outlook',color:'event'},
-    {date:'2026-05-15',time:'10:00',title:'KMG DX 교육 Day 2',duration:480,type:'outlook',color:'event'},
-    {date:'2026-05-18',time:'10:00',title:'제조DX 영업회의',duration:90,type:'outlook',color:'event'},
-    {date:'2026-05-18',time:'13:30',title:'DX본부 주간회의',duration:60,type:'outlook',color:'event'},
-    {date:'2026-05-20',time:'14:00',title:'DX본부 주간회의',duration:60,type:'outlook',color:'event'},
-    {date:'2026-05-25',time:'10:00',title:'제조DX 영업회의',duration:90,type:'outlook',color:'event'},
-    {date:'2026-05-25',time:'13:30',title:'DX본부 주간회의',duration:60,type:'outlook',color:'event'},
-    {date:'2026-05-27',time:'14:00',title:'DX본부 주간회의',duration:60,type:'outlook',color:'event'}
+    // 5/12 (화)
+    {date:'2026-05-12',time:'00:00',title:'KMG M T/F 주간보고 자료 작성',duration:0,type:'outlook',color:'event',isAllDay:true},
+    {date:'2026-05-12',time:'00:00',title:'여수출장',duration:0,type:'outlook',color:'event',isAllDay:true},
+    {date:'2026-05-12',time:'10:00',title:'현대카드 결제',duration:15,type:'outlook',color:'event'},
+    // 5/13 (수)
+    {date:'2026-05-13',time:'16:30',title:'코오롱베니트 분석과제',duration:60,type:'outlook',color:'event'},
+    // 5/14 (목)
+    {date:'2026-05-14',time:'00:00',title:'주차장 결제',duration:0,type:'outlook',color:'event',isAllDay:true},
+    {date:'2026-05-14',time:'00:00',title:'KGI 출장',duration:0,type:'outlook',color:'event',isAllDay:true},
+    {date:'2026-05-14',time:'17:00',title:'저녁',duration:120,type:'outlook',color:'event'}
   ],
   lastSync:''
 };
@@ -563,6 +569,8 @@ function renderDayPanel(){
   }
 
   const evs=state.events.filter(e=>e.date===active).sort((a,b)=>a.time.localeCompare(b.time));
+  const alldayEvs=evs.filter(e=>e.isAllDay);
+  const timedEvs=evs.filter(e=>!e.isAllDay);
 
   const todoPool=isPast ? [] : state.tasks
     .filter(t=>!t.done)
@@ -573,7 +581,7 @@ function renderDayPanel(){
     });
 
   const occupiedHours=new Set();
-  evs.forEach(e=>{
+  timedEvs.forEach(e=>{
     const [eh,em]=e.time.split(':').map(Number);
     const dur=e.duration||60;
     const startMin=eh*60+em;
@@ -584,7 +592,7 @@ function renderDayPanel(){
   });
   const slotRecs={};
   let taskIdx=0;
-  for(let h=10;h<=17;h++){
+  for(let h=9;h<=18;h++){
     if(occupiedHours.has(h))continue;
     const slotKey=String(h).padStart(2,'0');
     slotRecs[slotKey]=[];
@@ -608,18 +616,18 @@ function renderDayPanel(){
   }
 
   let busyMin=0;
-  evs.forEach(e=>{busyMin+=e.duration||60});
+  timedEvs.forEach(e=>{busyMin+=e.duration||60});
   const recMin=Object.values(slotRecs).reduce((s,arr)=>s+arr.reduce((ss,t)=>ss+(t.duration||30),0),0);
-  const totalMin=8*60;
+  const totalMin=10*60;
   const freeMin=Math.max(0,totalMin-busyMin-recMin);
   const busyPct=Math.min(100,(busyMin/totalMin)*100);
   const recPct=Math.min(100-busyPct,(recMin/totalMin)*100);
   const freePct=Math.max(0,100-busyPct-recPct);
 
   const slotsHTML=[];
-  for(let h=10;h<=17;h++){
+  for(let h=9;h<=18;h++){
     const hourLabel=String(h).padStart(2,'0');
-    const hourEvs=evs.filter(e=>parseInt(e.time.split(':')[0])===h);
+    const hourEvs=timedEvs.filter(e=>parseInt(e.time.split(':')[0])===h);
     if(hourEvs.length>0){
       hourEvs.forEach(e=>{
         slotsHTML.push(`<div class="slot"><span class="slot-t">${e.time}</span><div class="slot-c event"><span>${esc(e.title)}</span></div></div>`);
@@ -649,6 +657,10 @@ function renderDayPanel(){
   const dayLabelHTML=`<span class="day-label ${dCls}">${dLabel}</span>`;
   const headerLabel=isPast?'PAST':(isToday?'TODAY':'PLANNING');
 
+  const alldayHTML=alldayEvs.length>0
+    ?`<div class="allday-bar"><span class="label">종일</span>${alldayEvs.map(e=>`<span class="allday-chip">${esc(e.title)}</span>`).join('')}</div>`
+    :'';
+
   document.getElementById('todayPanel').innerHTML=`
     <div class="today-h">
       <div class="today-h-l"><span class="ic">⏰</span><span class="lbl">${headerLabel}</span></div>
@@ -660,6 +672,7 @@ function renderDayPanel(){
       <div class="day-strip">${stripHTML.join('')}</div>
       <button class="day-arrow" id="nextWeek" title="다음 주">›</button>
     </div>
+    ${alldayHTML}
     <div class="cap-row">
       <span class="l">가용 ${(totalMin/60).toFixed(0)}h</span>
       <span class="r">

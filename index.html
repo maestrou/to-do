@@ -4,7 +4,7 @@
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 <meta name="theme-color" content="#F5F7FA" />
-<title>Sir's Tasks · v17</title>
+<title>Sir's Tasks · v18</title>
 <link href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable.min.css" rel="stylesheet">
 <style>
 :root{
@@ -382,6 +382,7 @@ function save(){
   state.lastSync=new Date().toISOString();
   localStorage.setItem(STORAGE_KEY,JSON.stringify(state));
   render();
+  autoPushToGist();
 }
 
 const fmtDate=(d)=>`${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`;
@@ -689,8 +690,8 @@ function renderDayPanel(){
 function renderFoot(){
   const last=state.lastSync?new Date(state.lastSync):null;
   document.getElementById('footStatus').innerHTML=last
-    ?`synced — ${last.getFullYear()}.${String(last.getMonth()+1).padStart(2,'0')}.${String(last.getDate()).padStart(2,'0')} ${String(last.getHours()).padStart(2,'0')}:${String(last.getMinutes()).padStart(2,'0')}`
-    :'never synced';
+    ?`synced — ${last.getFullYear()}.${String(last.getMonth()+1).padStart(2,'0')}.${String(last.getDate()).padStart(2,'0')} ${String(last.getHours()).padStart(2,'0')}:${String(last.getMinutes()).padStart(2,'0')} · ${DEVICE_ID}`
+    :`auto-sync ready · ${DEVICE_ID}`;
 }
 
 function toggleTask(id){const t=state.tasks.find(x=>x.id===id);if(t){t.done=!t.done;save()}}
@@ -963,7 +964,80 @@ function applyHashSync(){
   }catch(e){console.warn('hash sync failed',e)}
 }
 
+/* ─── 자동 양방향 Gist sync ─── */
+const DEVICE_ID = (()=>{
+  let id = localStorage.getItem('sir-device-id');
+  if(!id){
+    const ua = navigator.userAgent;
+    const isIpad = /iPad|Macintosh.*Mobile/i.test(ua) || (navigator.maxTouchPoints > 1 && /Mac/i.test(ua));
+    const isMac = /Mac/i.test(ua) && !isIpad;
+    const platform = isIpad ? 'ipad' : (isMac ? 'mac' : 'web');
+    id = `${platform}-${Math.random().toString(36).slice(2,7)}`;
+    localStorage.setItem('sir-device-id', id);
+  }
+  return id;
+})();
+
+let pushTimer = null;
+let isPulling = false;
+let lastRemoteHash = '';
+
+function dataHash(obj){
+  return JSON.stringify({tasks:obj.tasks||[], events:obj.events||[]});
+}
+
+async function autoPullFromGist(){
+  if(isPulling) return;
+  isPulling = true;
+  try{
+    const r = await fetch(`${WORKER_URL}/?secret=${encodeURIComponent(SHARED_SECRET)}&_t=${Date.now()}`);
+    if(!r.ok) return;
+    const data = await r.json();
+    if(!data || (!data.tasks && !data.events)) return;
+    const remoteHash = dataHash(data);
+    if(remoteHash === lastRemoteHash) return;
+    const localHash = dataHash(state);
+    if(remoteHash !== localHash){
+      if(data.tasks) state.tasks = data.tasks;
+      if(data.events) state.events = data.events;
+      state.lastSync = new Date().toISOString();
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
+      render();
+      flash('🔄 다른 기기에서 갱신됨');
+    }
+    lastRemoteHash = remoteHash;
+  }catch(e){
+    console.warn('[auto-pull] failed:', e.message);
+  }finally{
+    isPulling = false;
+  }
+}
+
+function autoPushToGist(){
+  if(pushTimer) clearTimeout(pushTimer);
+  pushTimer = setTimeout(async()=>{
+    try{
+      const json = JSON.stringify({tasks:state.tasks, events:state.events});
+      const utf8 = new TextEncoder().encode(json);
+      let bin = '';
+      for(let i = 0; i < utf8.length; i++) bin += String.fromCharCode(utf8[i]);
+      const r = await fetch(WORKER_URL, {
+        method: 'POST',
+        headers: {'Content-Type':'application/json'},
+        body: JSON.stringify({secret:SHARED_SECRET, device:DEVICE_ID, data:btoa(bin)})
+      });
+      if(r.ok){
+        lastRemoteHash = dataHash(state);
+      }
+    }catch(e){
+      console.warn('[auto-push] failed:', e.message);
+    }
+  }, 1500);
+}
+
 applyHashSync();
+autoPullFromGist();
+setInterval(autoPullFromGist, 30000);
 render();
 setInterval(renderTopDate,60000);
 </script>

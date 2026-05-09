@@ -3,17 +3,26 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<meta name="theme-color" content="#F0E7D5" />
-<title>Sir's Tasks · v8</title>
+<meta name="theme-color" content="#F7F6F3" />
+<title>Sir's Tasks · v11</title>
 <link href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable.min.css" rel="stylesheet">
 <style>
 :root{
---bg:#F0E7D5;--bg-soft:#F5EEDD;--surface:#FFFFFF;
---hair:#E5DDC9;--hair-soft:#F2EBD9;--hair-d:#D4C9AF;
---t1:#1F2937;--t2:#6B7280;--t3:#9CA3AF;--t-inv:#FFFFFF;
---c-red:#DC2626;--c-red-s:#FEE2E2;--c-amb:#D97706;--c-amb-s:#FEF3C7;
---c-grn:#16A34A;--c-grn-s:#DCFCE7;--c-teal:#0D9488;--c-teal-s:#CCFBF1;
---c-lime:#84CC16;--c-lime-s:#ECFCCB;--c-blue:#3B82F6;
+/* Foundation — Linear-inspired warm-tinted neutrals */
+--bg:#F7F6F3;--surface:#FFFFFF;--surface-2:#EFECE7;
+--hair:#DDD8CE;--hair-soft:#EDE8DD;--hair-d:#BCB5A8;
+/* Text — warm Woodsmoke */
+--t1:#1A1814;--t2:#524C42;--t3:#9F9889;--t-inv:#F7F6F3;
+/* Heritage jewel tones */
+--c-red:#A8324A;--c-red-s:#F2E5E8;          /* Crimson — 긴급/지연 */
+--c-emr:#1F4A3A;--c-emr-s:#DDEBE3;          /* Deep Emerald — 보통/일정 */
+--c-saf:#A66A2E;--c-saf-s:#F4E8D9;          /* Saffron — 권고/배치 */
+--c-teal:#2D5F7E;--c-teal-s:#DEE9EF;        /* Sapphire Teal — info/sync */
+--c-grn:#1F4A3A;--c-grn-s:#DDEBE3;          /* Success = Emerald */
+--c-blue:#2D5F7E;                            /* Info = Teal */
+--shadow-sm:0 1px 2px rgba(26,24,20,.04);
+--shadow-md:0 1px 3px rgba(26,24,20,.06),0 4px 12px rgba(26,24,20,.04);
+--shadow-lg:0 8px 28px rgba(26,24,20,.10);
 --font-sans:'Pretendard Variable',Pretendard,-apple-system,BlinkMacSystemFont,sans-serif;
 --font-mono:ui-monospace,SFMono-Regular,"SF Mono",Menlo,Consolas,monospace;
 }
@@ -22,174 +31,183 @@ html,body{height:100%}
 body{font-family:var(--font-sans);background:var(--bg);color:var(--t1);font-size:13px;line-height:1.5;font-feature-settings:"ss01","tnum";-webkit-font-smoothing:antialiased;overflow-x:hidden}
 button{font:inherit;cursor:pointer;border:none;background:none;color:inherit}
 .app{max-width:1280px;margin:0 auto;padding:24px 28px 36px}
-.top{background:var(--surface);border:1px solid var(--hair);border-radius:14px;padding:14px 20px;display:grid;grid-template-columns:auto 1fr auto;gap:18px;align-items:center;margin-bottom:18px}
+.top{background:var(--surface);border:1px solid var(--hair);border-radius:14px;padding:14px 20px;display:grid;grid-template-columns:auto 1fr auto;gap:18px;align-items:center;margin-bottom:18px;box-shadow:var(--shadow-sm)}
 .top-brand{display:flex;align-items:baseline;gap:10px}
 .top-brand .ey{font-family:var(--font-mono);font-size:10px;font-weight:600;letter-spacing:.2em;color:var(--t3);text-transform:uppercase}
 .top-brand .ti{font-size:18px;font-weight:700;color:var(--t1);letter-spacing:-.02em}
 .top-brand .dt{font-family:var(--font-mono);font-size:12px;color:var(--t3);letter-spacing:.04em;margin-left:6px}
-.top-input{display:flex;align-items:center;gap:8px;padding:6px 10px 6px 14px;border-radius:8px;background:var(--bg-soft);border:1px solid transparent;transition:border-color 120ms;flex-wrap:wrap}
+.top-input{display:flex;align-items:center;gap:8px;padding:6px 10px 6px 14px;border-radius:8px;background:var(--surface-2);border:1px solid transparent;transition:all 120ms;flex-wrap:wrap}
 .top-input:focus-within{border-color:var(--hair-d);background:var(--surface)}
 .top-input .plus{color:var(--t3);font-size:16px;font-weight:300}
 .top-input input[type=text]{flex:1;border:none;outline:none;background:transparent;font:inherit;color:var(--t1);font-size:13px;min-width:120px;padding:4px 0}
 .top-input input[type=text]::placeholder{color:var(--t3)}
 .input-extras{display:flex;align-items:center;gap:6px;flex-wrap:wrap}
-.input-extras input[type=date]{padding:5px 10px;font:inherit;font-size:11.5px;border:1px solid var(--hair);border-radius:6px;background:var(--surface);color:var(--t1);outline:none;font-family:var(--font-mono);width:115px;cursor:pointer}
+.input-extras input[type=date]{padding:5px 10px;font:inherit;font-size:11.5px;border:1px solid var(--hair);border-radius:6px;background:var(--surface);color:var(--t1);outline:none;font-family:var(--font-mono);width:115px;cursor:pointer;transition:border-color 120ms}
 .input-extras input[type=date]:hover{border-color:var(--hair-d)}
-.input-extras select{padding:5px 8px;font:inherit;font-size:11.5px;border:1px solid var(--hair);border-radius:6px;background:var(--surface);outline:none;cursor:pointer;font-weight:600}
+.input-extras select{padding:5px 8px;font:inherit;font-size:11.5px;border:1px solid var(--hair);border-radius:6px;background:var(--surface);outline:none;cursor:pointer;font-weight:600;color:var(--t1);transition:all 120ms}
 .input-extras select:hover{border-color:var(--hair-d)}
-.input-extras select.pri-urg{color:var(--c-red);border-color:var(--c-red-s);background:var(--c-red-s)}
-.input-extras select.pri-hi{color:var(--c-amb);border-color:var(--c-amb-s);background:var(--c-amb-s)}
-.input-extras select.pri-norm{color:var(--c-grn);border-color:var(--c-grn-s);background:var(--c-grn-s)}
-.kbd{display:flex;gap:4px;color:var(--t3)}
-.kbd-key{font-family:var(--font-mono);font-size:10px;font-weight:500;padding:2px 6px;border-radius:4px;background:var(--surface);border:1px solid var(--hair);color:var(--t2)}
+.input-extras select.pri-urg{color:var(--c-red);border-color:#E6BCC5;background:var(--c-red-s)}
+.input-extras select.pri-hi{color:var(--c-emr);border-color:#A8C9B6;background:var(--c-emr-s)}
+.input-extras select.pri-norm{color:var(--t2);border-color:var(--hair);background:var(--surface)}
 .top-actions{display:flex;gap:6px}
 .top-icon{width:34px;height:34px;border-radius:8px;background:var(--surface);border:1px solid var(--hair);display:flex;align-items:center;justify-content:center;color:var(--t2);font-size:16px;transition:all 120ms}
-.top-icon:hover{background:var(--bg-soft);color:var(--t1)}
+.top-icon:hover{background:var(--surface-2);color:var(--t1);border-color:var(--hair-d)}
 .filters{display:flex;gap:6px;margin-bottom:14px;flex-wrap:wrap}
-.fbtn{padding:8px 14px;border-radius:8px;background:var(--surface);border:1px solid var(--hair);font-size:12.5px;font-weight:500;color:var(--t2);display:inline-flex;align-items:center;gap:8px;transition:all 120ms}
-.fbtn:hover{background:var(--bg-soft);color:var(--t1)}
+.fbtn{padding:8px 14px;border-radius:8px;background:var(--surface);border:1px solid var(--hair);font-size:12.5px;font-weight:500;color:var(--t2);display:inline-flex;align-items:center;gap:8px;transition:all 120ms;box-shadow:var(--shadow-sm)}
+.fbtn:hover{background:var(--surface-2);color:var(--t1);border-color:var(--hair-d)}
 .fbtn.on{background:var(--t1);color:var(--t-inv);border-color:var(--t1);font-weight:600}
 .fbtn .cnt{font-family:var(--font-mono);font-size:11px;font-weight:600;color:var(--t3);letter-spacing:-.02em}
-.fbtn.on .cnt{color:rgba(255,255,255,.6)}
+.fbtn.on .cnt{color:rgba(247,246,243,.6)}
 .fbtn.danger.on{background:var(--c-red);border-color:var(--c-red)}
-.fbtn.success.on{background:var(--c-grn);border-color:var(--c-grn)}
+.fbtn.success.on{background:var(--c-emr);border-color:var(--c-emr)}
 .body{display:grid;grid-template-columns:1.6fr 1fr;gap:18px;align-items:start}
-.tcol{background:var(--surface);border:1px solid var(--hair);border-radius:14px;padding:18px 20px;min-height:400px}
+.tcol{background:var(--surface);border:1px solid var(--hair);border-radius:14px;padding:18px 20px;min-height:400px;box-shadow:var(--shadow-md)}
 .tcol-head{display:flex;justify-content:space-between;align-items:baseline;margin-bottom:6px}
-.tcol-head .sort{font-size:11px;color:var(--t3);font-weight:500}
+.tcol-head .sort{font-size:11px;color:var(--t3);font-weight:500;font-family:var(--font-mono);letter-spacing:.04em;text-transform:uppercase}
 .grp{margin-top:18px}.grp:first-child{margin-top:0}
 .grp-h{display:flex;align-items:baseline;gap:8px;padding-bottom:8px;margin-bottom:2px}
-.grp-h .dot{width:8px;height:8px;border-radius:50%}
+.grp-h .dot{width:6px;height:6px;border-radius:50%}
 .grp-h .lbl{font-size:13px;font-weight:600;color:var(--t1);letter-spacing:-.005em}
 .grp-h .cnt{font-family:var(--font-mono);font-size:12px;color:var(--t3);font-weight:500}
 .grp.overdue .dot{background:var(--c-red)}.grp.overdue .lbl{color:var(--c-red)}
-.grp.today .dot{background:var(--c-amb)}.grp.today .lbl{color:var(--c-amb)}
-.grp.week .dot{background:var(--c-grn)}.grp.week .lbl{color:var(--c-grn)}
-.grp.later .dot,.grp.done .dot{background:var(--t3)}
-.grp.later .lbl,.grp.done .lbl{color:var(--t2)}
+.grp.today .dot{background:var(--c-emr)}.grp.today .lbl{color:var(--c-emr)}
+.grp.week .dot{background:var(--c-saf)}.grp.week .lbl{color:var(--c-saf)}
+.grp.later .dot,.grp.done .dot{background:var(--hair-d)}
+.grp.later .lbl,.grp.done .lbl{color:var(--t3)}
 .tk{display:grid;grid-template-columns:18px 1fr auto;gap:14px;align-items:start;padding:13px 14px 13px 18px;border-bottom:1px solid var(--hair-soft);position:relative;cursor:pointer;transition:background 120ms}
-.tk:last-child{border-bottom:none}.tk:hover{background:var(--bg-soft)}
-.tk::before{content:'';position:absolute;left:0;top:8px;bottom:8px;width:4px;border-radius:2px;background:transparent}
+.tk:last-child{border-bottom:none}.tk:hover{background:var(--surface-2)}
+.tk::before{content:'';position:absolute;left:0;top:8px;bottom:8px;width:2px;border-radius:2px;background:transparent}
 .tk.bar-red::before{background:var(--c-red)}
-.tk.bar-amb::before{background:var(--c-amb)}
-.tk.bar-grn::before{background:var(--c-grn)}
+.tk.bar-amb::before{background:var(--c-emr)}
+.tk.bar-grn::before{background:var(--c-saf)}
 .tk.bar-mute::before{background:var(--hair-d)}
 .cb{width:18px;height:18px;border:1.5px solid var(--hair-d);border-radius:5px;background:var(--surface);position:relative;margin-top:1px;flex-shrink:0;transition:all 120ms}
-.tk:hover .cb{border-color:var(--c-grn)}
-.cb.on{background:var(--c-grn);border-color:var(--c-grn)}
+.tk:hover .cb{border-color:var(--c-emr)}
+.cb.on{background:var(--c-emr);border-color:var(--c-emr)}
 .cb.on::after{content:'';position:absolute;left:5px;top:1px;width:5px;height:9px;border:solid white;border-width:0 1.6px 1.6px 0;transform:rotate(45deg)}
 .tk-body{min-width:0}
 .tk-title{font-size:14px;font-weight:600;color:var(--t1);letter-spacing:-.01em;line-height:1.4;word-break:keep-all}
 .tk.done .tk-title{color:var(--t3);text-decoration:line-through;text-decoration-color:var(--hair-d);font-weight:500}
-.tk-meta{display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin-top:6px;font-size:12px}
-.badge-overdue{display:inline-flex;align-items:center;gap:3px;background:var(--c-red);color:white;font-size:11px;font-weight:600;padding:3px 8px;border-radius:5px;letter-spacing:-.005em}
-.badge-overdue::before{content:'\26A0';font-size:10px}
+.tk-meta{display:flex;align-items:center;gap:6px;flex-wrap:wrap;margin-top:6px;font-size:12px}
+.created-chip{font-family:var(--font-mono);font-size:10.5px;color:var(--t2);background:var(--surface-2);padding:2px 7px;border-radius:4px;font-weight:500;letter-spacing:-.01em;border:1px solid var(--hair)}
+.badge-overdue{display:inline-flex;align-items:center;gap:3px;background:var(--c-red);color:white;font-size:10.5px;font-weight:600;padding:2px 7px;border-radius:4px;letter-spacing:-.005em}
 .pri-urg{color:var(--c-red);font-weight:600;font-size:12px}
-.pri-hi{color:var(--c-amb);font-weight:600;font-size:12px}
-.pri-norm{color:var(--c-grn);font-weight:600;font-size:12px}
-.tk-meta .dotsep{color:var(--t3);font-size:10px}
+.pri-hi{color:var(--c-emr);font-weight:600;font-size:12px}
+.pri-norm{color:var(--t3);font-weight:500;font-size:12px}
+.tk-meta .dotsep{color:var(--hair-d);font-size:10px}
 .tk-meta .info{color:var(--t2);font-size:12px}
-.tk-meta .info-dim{color:var(--t3);font-size:11px;font-family:var(--font-mono);letter-spacing:-.01em}
 .tk-actions{display:flex;gap:4px;opacity:0;transition:opacity 120ms;align-items:center;margin-top:1px}
 .tk:hover .tk-actions{opacity:1}
-.tk-act{width:28px;height:28px;border-radius:6px;background:var(--bg-soft);border:1px solid var(--hair);color:var(--t2);font-size:12px;display:flex;align-items:center;justify-content:center;transition:all 120ms}
+.tk-act{width:28px;height:28px;border-radius:6px;background:var(--surface-2);border:1px solid var(--hair);color:var(--t2);font-size:12px;display:flex;align-items:center;justify-content:center;transition:all 120ms}
 .tk-act:hover{background:var(--surface);color:var(--t1);border-color:var(--hair-d)}
 .empty{padding:48px 24px;text-align:center;color:var(--t3);font-size:13px}
-.empty-i{font-size:32px;margin-bottom:12px;opacity:.5}
-.today{background:var(--surface);border:1px solid var(--hair);border-radius:14px;padding:18px 20px}
+.empty-i{font-size:32px;margin-bottom:12px;opacity:.4}
+.today{background:var(--surface);border:1px solid var(--hair);border-radius:14px;padding:18px 20px;box-shadow:var(--shadow-md)}
 .today-h{display:flex;align-items:center;justify-content:space-between;margin-bottom:4px;color:var(--t2)}
 .today-h-l{display:flex;align-items:center;gap:6px}
 .today-h .ic{font-size:13px}
 .today-h .lbl{font-family:var(--font-mono);font-size:11px;font-weight:600;letter-spacing:.14em;text-transform:uppercase}
-.today-h .today-jump{font-family:var(--font-mono);font-size:10px;color:var(--c-blue);font-weight:600;cursor:pointer;padding:2px 8px;border-radius:5px;border:1px solid var(--hair);background:var(--surface);transition:all 120ms}
-.today-h .today-jump:hover{background:var(--bg-soft);border-color:var(--hair-d)}
+.today-h .today-jump{font-family:var(--font-mono);font-size:10px;color:var(--c-teal);font-weight:600;cursor:pointer;padding:2px 8px;border-radius:5px;border:1px solid var(--hair);background:var(--surface);transition:all 120ms}
+.today-h .today-jump:hover{background:var(--c-teal-s);border-color:#A8BCC9}
 .today-h .today-jump.hide{display:none}
 .today-d{font-size:20px;font-weight:700;color:var(--t1);letter-spacing:-.02em;margin-bottom:14px}
-.today-d .day-label{font-family:var(--font-mono);font-size:11px;font-weight:600;color:var(--c-amb);letter-spacing:.08em;margin-left:8px;text-transform:uppercase;vertical-align:2px}
-.today-d .day-label.future{color:var(--c-teal)}
+.today-d .day-label{font-family:var(--font-mono);font-size:11px;font-weight:600;color:var(--t2);letter-spacing:.08em;margin-left:8px;text-transform:uppercase;vertical-align:2px}
+.today-d .day-label.today{color:var(--c-red)}
+.today-d .day-label.future{color:var(--c-emr)}
 .today-d .day-label.past{color:var(--t3)}
-.day-nav{display:flex;align-items:center;gap:6px;margin-bottom:14px;padding:6px;background:var(--bg-soft);border-radius:10px}
+.day-nav{display:flex;align-items:center;gap:6px;margin-bottom:14px;padding:6px;background:var(--surface-2);border-radius:10px}
 .day-arrow{width:26px;height:26px;border-radius:6px;color:var(--t2);font-size:14px;font-weight:600;display:flex;align-items:center;justify-content:center;flex-shrink:0;transition:all 120ms}
-.day-arrow:hover{background:var(--surface);color:var(--t1)}
+.day-arrow:hover{background:var(--surface);color:var(--t1);box-shadow:var(--shadow-sm)}
 .day-strip{display:grid;grid-template-columns:repeat(7,1fr);gap:2px;flex:1}
 .day-chip{display:flex;flex-direction:column;align-items:center;padding:5px 0 7px;border-radius:6px;cursor:pointer;transition:all 100ms;position:relative;background:transparent;color:inherit;border:none;font:inherit}
 .day-chip:hover{background:var(--surface)}
 .day-chip .dow{font-family:var(--font-mono);font-size:9px;font-weight:600;color:var(--t3);letter-spacing:.04em;margin-bottom:2px}
 .day-chip .num{font-family:var(--font-mono);font-size:13px;font-weight:600;color:var(--t1);letter-spacing:-.02em;line-height:1}
-.day-chip.today .num{color:var(--c-amb);font-weight:700}
-.day-chip.today .dow{color:var(--c-amb)}
+.day-chip.today .num{color:var(--c-red);font-weight:700}
+.day-chip.today .dow{color:var(--c-red)}
 .day-chip.selected{background:var(--t1)}
 .day-chip.selected .dow{color:rgba(255,255,255,.5)}
 .day-chip.selected .num{color:white}
-.day-chip.selected.today .num{color:#FFD580}
-.day-chip.selected.today .dow{color:#FFD580}
-.day-chip .ev-dot{position:absolute;bottom:3px;width:3px;height:3px;border-radius:50%;background:var(--c-teal)}
+.day-chip.selected.today .num{color:#F4B5BE}
+.day-chip.selected.today .dow{color:#F4B5BE}
+.day-chip .ev-dot{position:absolute;bottom:3px;width:3px;height:3px;border-radius:50%;background:var(--c-emr)}
 .day-chip.selected .ev-dot{background:white}
 .day-chip.weekend .num{color:var(--t3)}
-.day-chip.weekend.today .num{color:var(--c-amb)}
+.day-chip.weekend.today .num{color:var(--c-red)}
 .day-chip.weekend.selected .num{color:rgba(255,255,255,.7)}
-.cap-row{display:flex;justify-content:space-between;align-items:baseline;margin-bottom:6px;font-size:12px}
-.cap-row .l{color:var(--t2)}.cap-row .r{color:var(--c-blue);font-weight:600}
-.cap-bar{display:flex;height:6px;border-radius:3px;overflow:hidden;background:var(--hair-soft);margin-bottom:14px}
-.cap-seg{height:100%}.cap-seg.busy{background:var(--c-grn)}
-.cap-seg.lunch{background:var(--c-red)}.cap-seg.free{background:var(--hair)}
-.slots{display:flex;flex-direction:column;gap:5px;margin-bottom:14px}
+.cap-row{display:flex;justify-content:space-between;align-items:baseline;margin-bottom:6px;font-size:11.5px;flex-wrap:wrap;gap:4px}
+.cap-row .l{color:var(--t2);font-weight:500}
+.cap-row .r{color:var(--t2);display:flex;flex-wrap:wrap;gap:8px}
+.cap-row .r .seg{display:inline-flex;align-items:center;gap:3px}
+.cap-row .r .seg::before{content:'';width:8px;height:8px;border-radius:2px;display:inline-block}
+.cap-row .r .seg.busy::before{background:var(--c-emr)}
+.cap-row .r .seg.rec::before{background:var(--c-saf)}
+.cap-row .r .seg.free::before{background:var(--hair-d)}
+.cap-row .r .seg b{font-weight:700;color:var(--t1)}
+.cap-bar{display:flex;height:5px;border-radius:3px;overflow:hidden;background:var(--surface-2);margin-bottom:14px}
+.cap-seg{height:100%}
+.cap-seg.busy{background:var(--c-emr)}
+.cap-seg.rec{background:var(--c-saf)}
+.cap-seg.lunch{background:var(--c-red)}
+.cap-seg.free{background:var(--hair-d)}
+.slots{display:flex;flex-direction:column;gap:5px;margin-bottom:0}
 .slot{display:grid;grid-template-columns:24px 1fr;gap:8px;align-items:start;min-height:24px}
 .slot-t{font-family:var(--font-mono);font-size:11px;color:var(--t3);letter-spacing:-.02em;padding-top:6px}
-.slot-c{border-radius:6px;padding:6px 10px;font-size:12.5px;font-weight:500;color:var(--t1);display:flex;align-items:center;gap:8px;line-height:1.3}
-.slot-c.teal{background:var(--c-teal-s);color:#0F766E}
-.slot-c.lime{background:var(--c-lime-s);color:#4D7C0F}
-.slot-c.beige{background:var(--bg-soft);color:var(--t2)}
-.slot-c.teal-d{background:#5EEAD4;color:#134E4A}
-.slot-c .cnum{font-family:var(--font-mono);font-size:10.5px;font-weight:600;letter-spacing:-.02em;opacity:.7}
+.slot-c{border-radius:6px;padding:6px 10px 6px 12px;font-size:12.5px;font-weight:500;color:var(--t1);display:flex;align-items:center;gap:8px;line-height:1.3;border-left:3px solid transparent}
+.slot-c.event,.slot-c.teal,.slot-c.lime,.slot-c.beige,.slot-c.teal-d{background:var(--c-emr-s);color:var(--c-emr);border-left-color:var(--c-emr)}
+.slot-c .cnum{font-family:var(--font-mono);font-size:10.5px;font-weight:600;letter-spacing:-.02em;color:var(--c-emr);opacity:.7}
+.slot-c.rec{background:var(--surface);border:1px solid var(--hair);border-left:3px solid var(--c-saf);display:flex;flex-direction:column;align-items:stretch;padding:5px 6px 5px 10px;gap:2px;color:var(--t1)}
+.rec-task{display:flex;align-items:center;gap:7px;font-size:12px;font-weight:500;padding:4px 6px;border-radius:5px;cursor:pointer;transition:background 100ms;color:var(--t1)}
+.rec-task:hover{background:var(--c-saf-s)}
+.rec-pri{width:6px;height:6px;border-radius:50%;flex-shrink:0}
+.rec-pri.urg{background:var(--c-red)}
+.rec-pri.hi{background:var(--c-emr)}
+.rec-pri.norm{background:var(--t3)}
+.rec-title{flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-weight:500}
+.rec-dur{font-family:var(--font-mono);font-size:10px;color:var(--t3);flex-shrink:0;font-weight:500}
+.rec-overdue{color:var(--c-red);font-weight:700;font-family:var(--font-mono);font-size:10px}
 .slot-empty{padding:5px 0;font-size:11.5px;color:var(--t3);font-style:italic;font-family:var(--font-mono);letter-spacing:-.01em;margin-left:32px}
-.kbds{border-top:1px solid var(--hair);padding-top:14px;margin-top:6px}
-.kbds-h{font-size:11px;color:var(--t2);margin-bottom:8px;font-weight:600}
-.kbds-row{display:flex;justify-content:space-between;padding:4px 0;font-size:11.5px}
-.kbds-row .l{color:var(--t2)}
-.kbds-row .r{font-family:var(--font-mono);font-size:10.5px;color:var(--t1);font-weight:600}
 .foot{margin-top:18px;padding-top:12px;display:flex;justify-content:space-between;align-items:center;font-family:var(--font-mono);font-size:10px;color:var(--t3);letter-spacing:.04em}
 .foot .acts{display:flex;gap:14px}
-.foot .acts a{color:var(--t2);cursor:pointer;text-decoration:none}.foot .acts a:hover{color:var(--t1)}
+.foot .acts a{color:var(--t2);cursor:pointer;text-decoration:none;transition:color 120ms}.foot .acts a:hover{color:var(--c-teal)}
 .foot .live{display:inline-flex;align-items:center;gap:5px}
-.foot .live::before{content:'';width:6px;height:6px;border-radius:50%;background:var(--c-grn)}
-.modal-bg{position:fixed;inset:0;background:rgba(31,41,55,.4);display:none;align-items:center;justify-content:center;z-index:100;padding:20px}
+.foot .live::before{content:'';width:6px;height:6px;border-radius:50%;background:var(--c-emr)}
+.modal-bg{position:fixed;inset:0;background:rgba(26,24,20,.4);display:none;align-items:center;justify-content:center;z-index:100;padding:20px}
 .modal-bg.on{display:flex}
-.modal{background:var(--surface);border-radius:14px;width:540px;max-width:100%;max-height:90vh;overflow-y:auto;border:1px solid var(--hair)}
+.modal{background:var(--surface);border-radius:14px;width:540px;max-width:100%;max-height:90vh;overflow-y:auto;border:1px solid var(--hair);box-shadow:var(--shadow-lg)}
 .modal-h{padding:18px 22px 14px;border-bottom:1px solid var(--hair);display:flex;justify-content:space-between;align-items:center}
 .modal-h .ti{font-size:15px;font-weight:700;color:var(--t1);letter-spacing:-.01em}
-.modal-h .x{width:28px;height:28px;border-radius:6px;color:var(--t3);font-size:18px;display:flex;align-items:center;justify-content:center}
-.modal-h .x:hover{background:var(--bg-soft);color:var(--t1)}
+.modal-h .x{width:28px;height:28px;border-radius:6px;color:var(--t3);font-size:18px;display:flex;align-items:center;justify-content:center;transition:all 120ms}
+.modal-h .x:hover{background:var(--surface-2);color:var(--t1)}
 .modal-b{padding:18px 22px}
 .modal-b h3{font-size:11px;font-weight:600;color:var(--t2);text-transform:uppercase;letter-spacing:.1em;margin:16px 0 8px;font-family:var(--font-mono)}
 .modal-b h3:first-child{margin-top:0}
 .modal-b p{font-size:12.5px;color:var(--t2);margin-bottom:8px;line-height:1.55}
-.modal-b input[type=text],.modal-b input[type=url],.modal-b input[type=date]{width:100%;padding:10px 12px;border:1px solid var(--hair);border-radius:7px;font-size:13px;background:var(--bg-soft);font-family:var(--font-sans);color:var(--t1);outline:none}
+.modal-b input[type=text],.modal-b input[type=url],.modal-b input[type=date]{width:100%;padding:10px 12px;border:1px solid var(--hair);border-radius:7px;font-size:13px;background:var(--surface-2);font-family:var(--font-sans);color:var(--t1);outline:none;transition:all 120ms}
 .modal-b input[type=date]{font-family:var(--font-mono)}
-.modal-b input:focus{background:var(--surface);border-color:var(--hair-d)}
+.modal-b input:focus{background:var(--surface);border-color:var(--c-emr)}
 .modal-actions{display:flex;gap:8px;margin-top:10px;flex-wrap:wrap;align-items:center}
-.btn{padding:9px 16px;border-radius:7px;font-size:12.5px;font-weight:600;background:var(--t1);color:var(--t-inv);transition:background 120ms;letter-spacing:-.005em}
-.btn:hover{background:#000}
-.btn.sec{background:var(--bg-soft);color:var(--t1);border:1px solid var(--hair)}
-.btn.sec:hover{background:var(--surface);border-color:var(--hair-d)}
-.btn.danger{background:var(--c-red)}.btn.danger:hover{background:#B91C1C}
+.btn{padding:9px 16px;border-radius:7px;font-size:12.5px;font-weight:600;background:var(--t1);color:var(--t-inv);transition:all 120ms;letter-spacing:-.005em}
+.btn:hover{background:#000;transform:translateY(-1px);box-shadow:var(--shadow-md)}
+.btn.sec{background:var(--surface-2);color:var(--t1);border:1px solid var(--hair)}
+.btn.sec:hover{background:var(--surface);border-color:var(--hair-d);transform:translateY(-1px)}
+.btn.danger{background:var(--c-red)}.btn.danger:hover{background:#8B2438}
 .btn.right{margin-left:auto}
-.modal-msg{font-size:11.5px;color:var(--t2);margin-top:8px;padding:8px 12px;background:var(--bg-soft);border-radius:6px;line-height:1.5}
-.modal-msg.ok{color:#15803D;background:var(--c-grn-s)}
-.modal-msg.err{color:#B91C1C;background:var(--c-red-s)}
+.modal-msg{font-size:11.5px;color:var(--t2);margin-top:8px;padding:8px 12px;background:var(--surface-2);border-radius:6px;line-height:1.5;border:1px solid var(--hair)}
+.modal-msg.ok{color:var(--c-emr);background:var(--c-emr-s);border-color:#A8C9B6}
+.modal-msg.err{color:var(--c-red);background:var(--c-red-s);border-color:#E6BCC5}
 .pri-chips{display:flex;gap:6px;flex-wrap:wrap}
-.pri-chip{padding:9px 16px;border-radius:8px;font-size:13px;font-weight:600;background:var(--bg-soft);border:1.5px solid var(--hair);color:var(--t2);cursor:pointer;transition:all 120ms}
+.pri-chip{padding:9px 16px;border-radius:8px;font-size:13px;font-weight:600;background:var(--surface-2);border:1.5px solid var(--hair);color:var(--t2);cursor:pointer;transition:all 120ms}
 .pri-chip:hover{background:var(--surface);border-color:var(--hair-d)}
 .pri-chip.on[data-p="urgent"]{background:var(--c-red-s);border-color:var(--c-red);color:var(--c-red)}
-.pri-chip.on[data-p="high"]{background:var(--c-amb-s);border-color:var(--c-amb);color:var(--c-amb)}
-.pri-chip.on[data-p="normal"]{background:var(--c-grn-s);border-color:var(--c-grn);color:var(--c-grn)}
-.task-meta-line{margin-top:14px;padding-top:12px;border-top:1px solid var(--hair);font-family:var(--font-mono);font-size:11px;color:var(--t3);display:flex;justify-content:space-between}
-.toast{position:fixed;bottom:24px;left:50%;transform:translateX(-50%);background:var(--t1);color:var(--t-inv);padding:11px 20px;border-radius:8px;font-size:12.5px;font-weight:500;z-index:200;box-shadow:0 6px 20px rgba(0,0,0,.18)}
+.pri-chip.on[data-p="high"]{background:var(--c-emr-s);border-color:var(--c-emr);color:var(--c-emr)}
+.pri-chip.on[data-p="normal"]{background:var(--surface);border-color:var(--hair-d);color:var(--t2)}
+.task-meta-line{margin-top:14px;padding-top:12px;border-top:1px solid var(--hair);font-family:var(--font-mono);font-size:11px;color:var(--t3);display:flex;gap:14px}
+.toast{position:fixed;bottom:24px;left:50%;transform:translateX(-50%);background:var(--t1);color:var(--t-inv);padding:11px 20px;border-radius:8px;font-size:12.5px;font-weight:500;z-index:200;box-shadow:var(--shadow-lg)}
 @media(max-width:768px){
   .app{padding:16px}
   .top{grid-template-columns:1fr;gap:10px;padding:12px 14px}
   .top-brand{justify-content:center}
-  .top-input .kbd{display:none}
   .input-extras input[type=date]{width:100%}
   .body{grid-template-columns:1fr;gap:14px}
 }
@@ -209,12 +227,11 @@ button{font:inherit;cursor:pointer;border:none;background:none;color:inherit}
       <div class="input-extras">
         <input id="quickDue" type="date" title="완성일자 (비우면 오늘)" />
         <select id="quickPri" class="pri-norm" title="우선순위">
-          <option value="urgent">🔥 긴급</option>
-          <option value="high">⚖ 보통</option>
-          <option value="normal" selected>🌿 여유</option>
+          <option value="urgent">긴급</option>
+          <option value="high">보통</option>
+          <option value="normal" selected>여유</option>
         </select>
       </div>
-      <span class="kbd"><span class="kbd-key">N</span><span class="kbd-key">⌘K</span></span>
     </div>
     <div class="top-actions">
       <button class="top-icon" id="btnSync" title="캘린더 동기화">⟳</button>
@@ -239,11 +256,10 @@ button{font:inherit;cursor:pointer;border:none;background:none;color:inherit}
   </footer>
 </div>
 
-<!-- Settings Modal -->
 <div class="modal-bg" id="modal">
   <div class="modal">
     <div class="modal-h">
-      <span class="ti">⚙ 설정</span>
+      <span class="ti">설정</span>
       <button class="x" id="modalClose">×</button>
     </div>
     <div class="modal-b">
@@ -271,11 +287,10 @@ button{font:inherit;cursor:pointer;border:none;background:none;color:inherit}
   </div>
 </div>
 
-<!-- Task Edit Modal -->
 <div class="modal-bg" id="taskEditModal">
   <div class="modal">
     <div class="modal-h">
-      <span class="ti">✎ 할 일 수정</span>
+      <span class="ti">할 일 수정</span>
       <button class="x" id="taskEditClose">×</button>
     </div>
     <div class="modal-b">
@@ -285,9 +300,9 @@ button{font:inherit;cursor:pointer;border:none;background:none;color:inherit}
       <input id="editDue" type="date" />
       <h3>우선순위</h3>
       <div class="pri-chips" id="editPriChips">
-        <button class="pri-chip" data-p="urgent">🔥 긴급</button>
-        <button class="pri-chip" data-p="high">⚖ 보통</button>
-        <button class="pri-chip" data-p="normal">🌿 여유</button>
+        <button class="pri-chip" data-p="urgent">긴급</button>
+        <button class="pri-chip" data-p="high">보통</button>
+        <button class="pri-chip" data-p="normal">여유</button>
       </div>
       <div class="modal-actions" style="margin-top:18px">
         <button class="btn" id="taskSave">저장</button>
@@ -309,7 +324,7 @@ const SHARED_SECRET='Sir-Kolon-2026-Sync';
 const SEED={
   tasks:[
     {id:'t1',title:'KMG 임원/팀장/실무자 오전 교육 프로그램 확정',due:'2026-05-09',priority:'urgent',done:false,duration:60,category:'KMG',createdAt:'2026-05-01'},
-    {id:'t2',title:'한화솔루션 발표자료 수정',due:'2026-05-09',priority:'high',done:false,duration:90,category:'HWS',createdAt:'2026-05-03'},
+    {id:'t2',title:'한화솔루션 발표자료 수정',due:'2026-05-09',priority:'urgent',done:false,duration:90,category:'HWS',createdAt:'2026-05-03'},
     {id:'t3',title:'KMG DX 교육 자료 최종 검토 — Lab 1·2·3',due:'2026-05-12',priority:'urgent',done:false,duration:120,category:'KMG',createdAt:'2026-05-05'},
     {id:'t4',title:'KMC Sales KPI 보고서 정리 — 3-Tier 드릴다운',due:'2026-05-15',priority:'high',done:false,duration:120,category:'KMC',createdAt:'2026-05-04'},
     {id:'t5',title:'데이터분석과제 정기점검 자료 정리',due:'2026-05-16',priority:'normal',done:false,duration:45,category:'PRJ',createdAt:'2026-05-06'},
@@ -319,9 +334,17 @@ const SEED={
     {id:'t9',title:'Tampermonkey 유저스크립트 첫 동기화 검증',due:'2026-05-09',priority:'normal',done:true,duration:15,category:'DEV',createdAt:'2026-05-08'}
   ],
   events:[
-    {date:'2026-05-12',time:'10:00',title:'제조DX 영업회의',duration:90,type:'outlook',color:'teal'},
-    {date:'2026-05-13',time:'14:00',title:'DX본부 주간회의',duration:60,type:'outlook',color:'teal-d'},
-    {date:'2026-05-14',time:'10:00',title:'KMG DX 교육 Day 1',duration:480,type:'outlook',color:'lime'}
+    {date:'2026-05-11',time:'10:00',title:'제조DX 영업회의',duration:90,type:'outlook',color:'event'},
+    {date:'2026-05-11',time:'13:30',title:'DX본부 주간회의',duration:60,type:'outlook',color:'event'},
+    {date:'2026-05-13',time:'14:00',title:'DX본부 주간회의',duration:60,type:'outlook',color:'event'},
+    {date:'2026-05-14',time:'10:00',title:'KMG DX 교육 Day 1',duration:480,type:'outlook',color:'event'},
+    {date:'2026-05-15',time:'10:00',title:'KMG DX 교육 Day 2',duration:480,type:'outlook',color:'event'},
+    {date:'2026-05-18',time:'10:00',title:'제조DX 영업회의',duration:90,type:'outlook',color:'event'},
+    {date:'2026-05-18',time:'13:30',title:'DX본부 주간회의',duration:60,type:'outlook',color:'event'},
+    {date:'2026-05-20',time:'14:00',title:'DX본부 주간회의',duration:60,type:'outlook',color:'event'},
+    {date:'2026-05-25',time:'10:00',title:'제조DX 영업회의',duration:90,type:'outlook',color:'event'},
+    {date:'2026-05-25',time:'13:30',title:'DX본부 주간회의',duration:60,type:'outlook',color:'event'},
+    {date:'2026-05-27',time:'14:00',title:'DX본부 주간회의',duration:60,type:'outlook',color:'event'}
   ],
   lastSync:''
 };
@@ -351,6 +374,7 @@ const today=()=>fmtDate(new Date());
 const dayDiff=(a,b)=>Math.round((new Date(a)-new Date(b))/86400000);
 const weekday=['SUN','MON','TUE','WED','THU','FRI','SAT'];
 const weekdayKR=['일','월','화','수','목','금','토'];
+const PRI_ORDER={urgent:0,high:1,normal:2};
 
 function getActiveDate(){return selectedDate||today()}
 function getWeekStart(dateStr){
@@ -375,6 +399,7 @@ function group(t){
 }
 function priLabel(p){return p==='urgent'?'긴급':(p==='high'?'보통':'여유')}
 function priClass(p){return p==='urgent'?'pri-urg':(p==='high'?'pri-hi':'pri-norm')}
+function priShort(p){return p==='urgent'?'urg':(p==='high'?'hi':'norm')}
 function barClass(t){
   if(t.done)return 'bar-mute';
   const g=group(t);
@@ -394,7 +419,6 @@ function createdAtLabel(t){
     const dt=new Date(t.createdAt);
     if(!isNaN(dt))return `${dt.getMonth()+1}.${dt.getDate()}`;
   }
-  // fallback: id에서 timestamp 추출
   const m=t.id&&t.id.match(/^t(\d{10,})$/);
   if(m){
     const ts=parseInt(m[1]);
@@ -443,8 +467,7 @@ function renderTasks(){
     done:{lbl:'완료',cls:'done',tasks:[]}
   };
   list.forEach(t=>groups[group(t)].tasks.push(t));
-  const priOrder={urgent:0,high:1,normal:2};
-  Object.values(groups).forEach(g=>g.tasks.sort((a,b)=>(priOrder[a.priority]-priOrder[b.priority])||(a.due.localeCompare(b.due))));
+  Object.values(groups).forEach(g=>g.tasks.sort((a,b)=>(PRI_ORDER[a.priority]-PRI_ORDER[b.priority])||(a.due.localeCompare(b.due))));
   const order=['overdue','today','week','later','done'];
   const html=order.filter(k=>groups[k].tasks.length>0).map(k=>{
     const g=groups[k];
@@ -469,12 +492,12 @@ function taskHTML(t){
     <div class="tk-body">
       <div class="tk-title">${esc(t.title)}</div>
       <div class="tk-meta">
+        ${created?`<span class="created-chip">+ ${created}</span>`:''}
         ${overdueBadge}
         <span class="${priClass(t.priority)}">${priLabel(t.priority)}</span>
         ${dueLbl?`<span class="dotsep">·</span><span class="info">${dueLbl}</span>`:''}
         ${t.duration?`<span class="dotsep">·</span><span class="info">${t.duration}min</span>`:''}
         ${t.scheduled?`<span class="dotsep">·</span><span class="info">${t.scheduled} 배치</span>`:''}
-        ${created?`<span class="dotsep">·</span><span class="info-dim">작성 ${created}</span>`:''}
       </div>
     </div>
     <div class="tk-actions">
@@ -484,15 +507,15 @@ function taskHTML(t){
   </div>`;
 }
 
-/* ── 우측 패널: day strip + 선택 날짜 일정 ── */
 function renderDayPanel(){
   const active=getActiveDate();
   const isToday=active===today();
+  const isPast=dayDiff(active,today())<0;
   const diff=dayDiff(active,today());
   const dt=new Date(active);
 
   let dLabel='',dCls='';
-  if(diff===0){dLabel='TODAY'}
+  if(diff===0){dLabel='TODAY';dCls='today'}
   else if(diff===1){dLabel='+1d';dCls='future'}
   else if(diff===-1){dLabel='-1d';dCls='past'}
   else if(diff>0){dLabel=`+${diff}d`;dCls='future'}
@@ -519,35 +542,85 @@ function renderDayPanel(){
   }
 
   const evs=state.events.filter(e=>e.date===active).sort((a,b)=>a.time.localeCompare(b.time));
-  let busyMin=0,lunchMin=0;
-  evs.forEach(e=>{if(e.color==='beige')lunchMin+=e.duration||60;else busyMin+=e.duration||60});
+
+  const todoPool=isPast ? [] : state.tasks
+    .filter(t=>!t.done)
+    .sort((a,b)=>{
+      const pdiff=PRI_ORDER[a.priority]-PRI_ORDER[b.priority];
+      if(pdiff!==0)return pdiff;
+      return a.due.localeCompare(b.due);
+    });
+
+  const eventHours=new Set(evs.map(e=>parseInt(e.time.split(':')[0])));
+  const slotRecs={};
+  let taskIdx=0;
+  for(let h=10;h<=17;h++){
+    if(eventHours.has(h))continue;
+    const slotKey=String(h).padStart(2,'0');
+    slotRecs[slotKey]=[];
+    let used=0;
+    while(taskIdx<todoPool.length){
+      const t=todoPool[taskIdx];
+      const d=t.duration||30;
+      if(used+d<=60){
+        slotRecs[slotKey].push(t);
+        used+=d;
+        taskIdx++;
+      }else if(used===0&&d>60){
+        slotRecs[slotKey].push(t);
+        used+=d;
+        taskIdx++;
+        break;
+      }else{
+        break;
+      }
+    }
+  }
+
+  let busyMin=0;
+  evs.forEach(e=>{busyMin+=e.duration||60});
+  const recMin=Object.values(slotRecs).reduce((s,arr)=>s+arr.reduce((ss,t)=>ss+(t.duration||30),0),0);
   const totalMin=8*60;
-  const freeMin=Math.max(0,totalMin-busyMin-lunchMin);
-  const usableMin=totalMin-lunchMin;
+  const freeMin=Math.max(0,totalMin-busyMin-recMin);
   const busyPct=Math.min(100,(busyMin/totalMin)*100);
-  const lunchPct=Math.min(100,(lunchMin/totalMin)*100);
-  const freePct=Math.max(0,100-busyPct-lunchPct);
+  const recPct=Math.min(100-busyPct,(recMin/totalMin)*100);
+  const freePct=Math.max(0,100-busyPct-recPct);
 
   const slotsHTML=[];
-  const usedHours=new Set(evs.map(e=>parseInt(e.time.split(':')[0])));
   for(let h=10;h<=17;h++){
     const hourLabel=String(h).padStart(2,'0');
     const hourEvs=evs.filter(e=>parseInt(e.time.split(':')[0])===h);
     if(hourEvs.length>0){
       hourEvs.forEach(e=>{
-        slotsHTML.push(`<div class="slot"><span class="slot-t">${hourLabel}</span><div class="slot-c ${e.color||'teal'}"><span class="cnum">${hourLabel}</span><span>${esc(e.title)}</span></div></div>`);
+        slotsHTML.push(`<div class="slot"><span class="slot-t">${hourLabel}</span><div class="slot-c event"><span class="cnum">${hourLabel}</span><span>${esc(e.title)}</span></div></div>`);
       });
-    }else if(!usedHours.has(h)){
-      slotsHTML.push(`<div class="slot-empty">${hourLabel}:00 빈 시간</div>`);
+    }else{
+      const recs=slotRecs[hourLabel]||[];
+      if(recs.length>0){
+        const recHTML=recs.map(t=>{
+          const isOverdue=dayDiff(t.due,today())<0;
+          const dueLbl=isOverdue?`<span class="rec-overdue">${Math.abs(dayDiff(t.due,today()))}d 지연</span>`:'';
+          return `<div class="rec-task" data-task-id="${t.id}">
+            <span class="rec-pri ${priShort(t.priority)}"></span>
+            <span class="rec-title">${esc(t.title)}</span>
+            ${dueLbl}
+            <span class="rec-dur">${t.duration||30}m</span>
+          </div>`;
+        }).join('');
+        slotsHTML.push(`<div class="slot"><span class="slot-t">${hourLabel}</span><div class="slot-c rec">${recHTML}</div></div>`);
+      }else{
+        slotsHTML.push(`<div class="slot-empty">${hourLabel}:00 ${isPast?'지난 시간':'빈 시간'}</div>`);
+      }
     }
   }
 
   const dowKR=weekdayKR[dt.getDay()];
-  const dayLabelHTML=isToday?'<span class="day-label">TODAY</span>':`<span class="day-label ${dCls}">${dLabel}</span>`;
+  const dayLabelHTML=`<span class="day-label ${dCls}">${dLabel}</span>`;
+  const headerLabel=isPast?'PAST':(isToday?'TODAY':'PLANNING');
 
   document.getElementById('todayPanel').innerHTML=`
     <div class="today-h">
-      <div class="today-h-l"><span class="ic">⏰</span><span class="lbl">DAY VIEW</span></div>
+      <div class="today-h-l"><span class="ic">⏰</span><span class="lbl">${headerLabel}</span></div>
       <button class="today-jump ${isToday?'hide':''}" id="jumpToday">→ TODAY</button>
     </div>
     <div class="today-d">${dt.getMonth()+1}.${dt.getDate()} ${dowKR}요일${dayLabelHTML}</div>
@@ -556,20 +629,20 @@ function renderDayPanel(){
       <div class="day-strip">${stripHTML.join('')}</div>
       <button class="day-arrow" id="nextWeek" title="다음 주">›</button>
     </div>
-    <div class="cap-row"><span class="l">가용 ${Math.round(usableMin/60)}h</span><span class="r">배치 ${Math.round(busyMin/60)}h · 남은 ${Math.round(freeMin/60)}h</span></div>
+    <div class="cap-row">
+      <span class="l">가용 ${(totalMin/60).toFixed(0)}h</span>
+      <span class="r">
+        <span class="seg busy"><b>${(busyMin/60).toFixed(1)}h</b> 일정</span>
+        <span class="seg rec"><b>${(recMin/60).toFixed(1)}h</b> 권고</span>
+        <span class="seg free"><b>${(freeMin/60).toFixed(1)}h</b> 여유</span>
+      </span>
+    </div>
     <div class="cap-bar">
       <div class="cap-seg busy" style="width:${busyPct}%"></div>
-      <div class="cap-seg lunch" style="width:${lunchPct}%"></div>
+      <div class="cap-seg rec" style="width:${recPct}%"></div>
       <div class="cap-seg free" style="width:${freePct}%"></div>
     </div>
-    <div class="slots">${slotsHTML.join('')||'<div class="slot-empty">일정 없음</div>'}</div>
-    <div class="kbds">
-      <div class="kbds-h">단축키</div>
-      <div class="kbds-row"><span class="l">새 할 일</span><span class="r">N</span></div>
-      <div class="kbds-row"><span class="l">검색</span><span class="r">⌘K</span></div>
-      <div class="kbds-row"><span class="l">이전/다음 날</span><span class="r">← →</span></div>
-      <div class="kbds-row"><span class="l">오늘로</span><span class="r">T</span></div>
-    </div>`;
+    <div class="slots">${slotsHTML.join('')||'<div class="slot-empty">일정 없음</div>'}</div>`;
 
   document.querySelectorAll('.day-chip').forEach(b=>{
     b.addEventListener('click',()=>{selectedDate=b.dataset.date;render()});
@@ -578,6 +651,9 @@ function renderDayPanel(){
   document.getElementById('nextWeek').addEventListener('click',()=>{selectedDate=addDays(getActiveDate(),7);render()});
   const jt=document.getElementById('jumpToday');
   if(jt)jt.addEventListener('click',()=>{selectedDate=null;render()});
+  document.querySelectorAll('.rec-task').forEach(el=>{
+    el.addEventListener('click',()=>openTaskEdit(el.dataset.taskId));
+  });
 }
 
 function renderFoot(){
@@ -594,7 +670,6 @@ function snoozeTask(id){
   save();flash('기한 +1일');
 }
 
-/* ── Task Edit Modal ── */
 function openTaskEdit(id){
   const t=state.tasks.find(x=>x.id===id);
   if(!t)return;
@@ -604,8 +679,6 @@ function openTaskEdit(id){
   document.querySelectorAll('#editPriChips .pri-chip').forEach(c=>{
     c.classList.toggle('on',c.dataset.p===t.priority);
   });
-  // meta line: 작성/완료 정보
-  const created=t.createdAt||(createdAtLabel(t)?`(추정)`:null);
   const metaParts=[];
   if(t.createdAt)metaParts.push(`작성: ${t.createdAt}`);
   if(t.done)metaParts.push(`완료됨`);
@@ -657,7 +730,6 @@ document.getElementById('taskEditClose').addEventListener('click',closeTaskEdit)
 document.getElementById('taskEditModal').addEventListener('click',e=>{if(e.target.id==='taskEditModal')closeTaskEdit()});
 document.getElementById('editTitle').addEventListener('keydown',e=>{if(e.key==='Enter'){e.preventDefault();saveTaskEdit()}});
 
-/* ── Quick Input ── */
 const quickInput=document.getElementById('quickInput');
 const quickDue=document.getElementById('quickDue');
 const quickPri=document.getElementById('quickPri');
@@ -682,7 +754,6 @@ function addTask(){
   });
   quickInput.value='';
   quickDue.value='';
-  // 우선순위는 마지막 선택 유지 (편의)
   save();flash('추가됨');
 }
 quickInput.addEventListener('keydown',e=>{if(e.key==='Enter'){addTask()}});
@@ -698,7 +769,6 @@ document.addEventListener('keydown',e=>{
   if(e.key==='t'||e.key==='T'){e.preventDefault();selectedDate=null;render()}
 });
 
-/* ─── ICS Calendar ─── */
 function parseICSDate(v){
   const isUTC=v.endsWith('Z');
   const clean=v.replace(/[TZ]/g,'').replace(/[-:]/g,'');
@@ -728,15 +798,12 @@ function parseICS(text){
   }
   return events;
 }
-function hashStr(s){let h=0;for(const c of s)h=((h<<5)-h+c.charCodeAt(0))|0;return h}
 function icsToEvents(icsEvents){
-  const colors=['teal','lime','teal-d'];
   return icsEvents.map(e=>{
     const start=e.dtstart;
     const end=e.dtend||new Date(start.getTime()+60*60*1000);
     const dur=Math.max(15,Math.round((end-start)/60000));
-    const ci=Math.abs(hashStr(e.uid||e.summary||''))%colors.length;
-    return {date:fmtDate(start),time:`${String(start.getHours()).padStart(2,'0')}:${String(start.getMinutes()).padStart(2,'0')}`,title:e.summary||'(제목 없음)',duration:dur,type:'outlook',color:colors[ci]};
+    return {date:fmtDate(start),time:`${String(start.getHours()).padStart(2,'0')}:${String(start.getMinutes()).padStart(2,'0')}`,title:e.summary||'(제목 없음)',duration:dur,type:'outlook',color:'event'};
   });
 }
 async function fetchICS(url){
@@ -820,7 +887,7 @@ document.getElementById('btnSyncPush').addEventListener('click',async()=>{
     const json=JSON.stringify({tasks:state.tasks,events:state.events});
     const utf8=new TextEncoder().encode(json);
     let bin='';for(let i=0;i<utf8.length;i++)bin+=String.fromCharCode(utf8[i]);
-    const r=await fetch(WORKER_URL,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({secret:SHARED_SECRET,device:'pwa-v8',data:btoa(bin)})});
+    const r=await fetch(WORKER_URL,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({secret:SHARED_SECRET,device:'pwa-v11',data:btoa(bin)})});
     if(!r.ok)throw new Error(`HTTP ${r.status}`);
     showSyncMsg('✓ Gist로 전송됨','ok');
   }catch(e){showSyncMsg('❌ '+e.message,'err')}

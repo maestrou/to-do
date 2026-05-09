@@ -3,26 +3,33 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<meta name="theme-color" content="#F7F6F3" />
-<title>Sir's Tasks · v11</title>
+<meta name="theme-color" content="#F5F7FA" />
+<title>Sir's Tasks · v17</title>
 <link href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable.min.css" rel="stylesheet">
 <style>
 :root{
-/* Foundation — Linear-inspired warm-tinted neutrals */
---bg:#F7F6F3;--surface:#FFFFFF;--surface-2:#EFECE7;
---hair:#DDD8CE;--hair-soft:#EDE8DD;--hair-d:#BCB5A8;
-/* Text — warm Woodsmoke */
---t1:#1A1814;--t2:#524C42;--t3:#9F9889;--t-inv:#F7F6F3;
-/* Heritage jewel tones */
---c-red:#A8324A;--c-red-s:#F2E5E8;          /* Crimson — 긴급/지연 */
---c-emr:#1F4A3A;--c-emr-s:#DDEBE3;          /* Deep Emerald — 보통/일정 */
---c-saf:#A66A2E;--c-saf-s:#F4E8D9;          /* Saffron — 권고/배치 */
---c-teal:#2D5F7E;--c-teal-s:#DEE9EF;        /* Sapphire Teal — info/sync */
---c-grn:#1F4A3A;--c-grn-s:#DDEBE3;          /* Success = Emerald */
---c-blue:#2D5F7E;                            /* Info = Teal */
---shadow-sm:0 1px 2px rgba(26,24,20,.04);
---shadow-md:0 1px 3px rgba(26,24,20,.06),0 4px 12px rgba(26,24,20,.04);
---shadow-lg:0 8px 28px rgba(26,24,20,.10);
+/* Foundation — Cool slate neutrals */
+--bg:#F5F7FA;--surface:#FFFFFF;--surface-2:#EBEEF3;
+--hair:#DDE2EA;--hair-soft:#F0F2F6;--hair-d:#B8C0CD;
+/* Text — Cool slate */
+--t1:#0F172A;--t2:#475569;--t3:#94A3B8;--t-inv:#F5F7FA;
+/* Vibrant jewel tones — Linear-inspired */
+--c-red:#E11D48;--c-red-s:#FFE4E6;            /* Rose 600 — vivid magenta-red */
+--c-emr:#4F46E5;--c-emr-s:#EEF2FF;            /* Indigo 600 — Linear vibrant */
+--c-saf:#06B6D4;--c-saf-s:#ECFEFF;            /* Cyan 500 — electric */
+--c-teal:#0EA5E9;--c-teal-s:#E0F2FE;          /* Sky 500 — vivid info */
+--c-violet:#8B5CF6;--c-violet-s:#EDE9FE;      /* Violet 500 — extra accent */
+--c-grn:#4F46E5;--c-grn-s:#EEF2FF;            /* Success = Indigo */
+--c-blue:#0EA5E9;                              /* Info = Sky */
+/* Due-chip gradients */
+--grad-due-default:linear-gradient(135deg,#1E293B 0%,#4F46E5 100%);
+--grad-due-urgent:linear-gradient(135deg,#9F1239 0%,#E11D48 100%);
+--grad-due-overdue:linear-gradient(135deg,#881337 0%,#BE123C 100%);
+--grad-due-high:linear-gradient(135deg,#312E81 0%,#4F46E5 100%);
+--grad-due-normal:linear-gradient(135deg,#475569 0%,#64748B 100%);
+--shadow-sm:0 1px 2px rgba(15,23,42,.04);
+--shadow-md:0 1px 3px rgba(15,23,42,.06),0 4px 12px rgba(15,23,42,.04);
+--shadow-lg:0 8px 28px rgba(15,23,42,.10);
 --font-sans:'Pretendard Variable',Pretendard,-apple-system,BlinkMacSystemFont,sans-serif;
 --font-mono:ui-monospace,SFMono-Regular,"SF Mono",Menlo,Consolas,monospace;
 }
@@ -46,8 +53,8 @@ button{font:inherit;cursor:pointer;border:none;background:none;color:inherit}
 .input-extras input[type=date]:hover{border-color:var(--hair-d)}
 .input-extras select{padding:5px 8px;font:inherit;font-size:11.5px;border:1px solid var(--hair);border-radius:6px;background:var(--surface);outline:none;cursor:pointer;font-weight:600;color:var(--t1);transition:all 120ms}
 .input-extras select:hover{border-color:var(--hair-d)}
-.input-extras select.pri-urg{color:var(--c-red);border-color:#E6BCC5;background:var(--c-red-s)}
-.input-extras select.pri-hi{color:var(--c-emr);border-color:#A8C9B6;background:var(--c-emr-s)}
+.input-extras select.pri-urg{color:var(--c-red);border-color:#F4B7C9;background:var(--c-red-s)}
+.input-extras select.pri-hi{color:var(--c-emr);border-color:#A8C3F0;background:var(--c-emr-s)}
 .input-extras select.pri-norm{color:var(--t2);border-color:var(--hair);background:var(--surface)}
 .top-actions{display:flex;gap:6px}
 .top-icon{width:34px;height:34px;border-radius:8px;background:var(--surface);border:1px solid var(--hair);display:flex;align-items:center;justify-content:center;color:var(--t2);font-size:16px;transition:all 120ms}
@@ -89,6 +96,13 @@ button{font:inherit;cursor:pointer;border:none;background:none;color:inherit}
 .tk-title{font-size:14px;font-weight:600;color:var(--t1);letter-spacing:-.01em;line-height:1.4;word-break:keep-all}
 .tk.done .tk-title{color:var(--t3);text-decoration:line-through;text-decoration-color:var(--hair-d);font-weight:500}
 .tk-meta{display:flex;align-items:center;gap:6px;flex-wrap:wrap;margin-top:6px;font-size:12px}
+.due-chip{font-family:var(--font-mono);font-size:11px;font-weight:700;padding:3px 10px;border-radius:5px;letter-spacing:-.01em;color:white;display:inline-flex;align-items:center;gap:3px}
+.due-chip.normal{background:var(--grad-due-normal);box-shadow:0 1px 2px rgba(100,116,139,.15)}
+.due-chip.high{background:var(--grad-due-high);box-shadow:0 1px 3px rgba(79,70,229,.22)}
+.due-chip.urgent{background:var(--grad-due-urgent);box-shadow:0 1px 3px rgba(225,29,72,.28)}
+.due-chip.overdue{background:var(--grad-due-overdue);box-shadow:0 1px 4px rgba(190,18,60,.32)}
+.created-mini{font-family:var(--font-mono);font-size:11px;color:var(--t3);letter-spacing:-.01em}
+.overdue-mini{color:#BE123C;font-size:10.5px;font-weight:700;font-family:var(--font-mono);letter-spacing:-.02em;padding:2px 6px;background:#FFE4E6;border-radius:4px}
 .created-chip{font-family:var(--font-mono);font-size:10.5px;color:var(--t2);background:var(--surface-2);padding:2px 7px;border-radius:4px;font-weight:500;letter-spacing:-.01em;border:1px solid var(--hair)}
 .badge-overdue{display:inline-flex;align-items:center;gap:3px;background:var(--c-red);color:white;font-size:10.5px;font-weight:600;padding:2px 7px;border-radius:4px;letter-spacing:-.005em}
 .pri-urg{color:var(--c-red);font-weight:600;font-size:12px}
@@ -108,7 +122,7 @@ button{font:inherit;cursor:pointer;border:none;background:none;color:inherit}
 .today-h .ic{font-size:13px}
 .today-h .lbl{font-family:var(--font-mono);font-size:11px;font-weight:600;letter-spacing:.14em;text-transform:uppercase}
 .today-h .today-jump{font-family:var(--font-mono);font-size:10px;color:var(--c-teal);font-weight:600;cursor:pointer;padding:2px 8px;border-radius:5px;border:1px solid var(--hair);background:var(--surface);transition:all 120ms}
-.today-h .today-jump:hover{background:var(--c-teal-s);border-color:#A8BCC9}
+.today-h .today-jump:hover{background:var(--c-teal-s);border-color:#A8CFE6}
 .today-h .today-jump.hide{display:none}
 .today-d{font-size:20px;font-weight:700;color:var(--t1);letter-spacing:-.02em;margin-bottom:14px}
 .today-d .day-label{font-family:var(--font-mono);font-size:11px;font-weight:600;color:var(--t2);letter-spacing:.08em;margin-left:8px;text-transform:uppercase;vertical-align:2px}
@@ -128,8 +142,8 @@ button{font:inherit;cursor:pointer;border:none;background:none;color:inherit}
 .day-chip.selected{background:var(--t1)}
 .day-chip.selected .dow{color:rgba(255,255,255,.5)}
 .day-chip.selected .num{color:white}
-.day-chip.selected.today .num{color:#F4B5BE}
-.day-chip.selected.today .dow{color:#F4B5BE}
+.day-chip.selected.today .num{color:#FCA5BD}
+.day-chip.selected.today .dow{color:#FCA5BD}
 .day-chip .ev-dot{position:absolute;bottom:3px;width:3px;height:3px;border-radius:50%;background:var(--c-emr)}
 .day-chip.selected .ev-dot{background:white}
 .day-chip.weekend .num{color:var(--t3)}
@@ -151,7 +165,7 @@ button{font:inherit;cursor:pointer;border:none;background:none;color:inherit}
 .cap-seg.lunch{background:var(--c-red)}
 .cap-seg.free{background:var(--hair-d)}
 .slots{display:flex;flex-direction:column;gap:5px;margin-bottom:0}
-.slot{display:grid;grid-template-columns:24px 1fr;gap:8px;align-items:start;min-height:24px}
+.slot{display:grid;grid-template-columns:40px 1fr;gap:8px;align-items:start;min-height:24px}
 .slot-t{font-family:var(--font-mono);font-size:11px;color:var(--t3);letter-spacing:-.02em;padding-top:6px}
 .slot-c{border-radius:6px;padding:6px 10px 6px 12px;font-size:12.5px;font-weight:500;color:var(--t1);display:flex;align-items:center;gap:8px;line-height:1.3;border-left:3px solid transparent}
 .slot-c.event,.slot-c.teal,.slot-c.lime,.slot-c.beige,.slot-c.teal-d{background:var(--c-emr-s);color:var(--c-emr);border-left-color:var(--c-emr)}
@@ -166,7 +180,7 @@ button{font:inherit;cursor:pointer;border:none;background:none;color:inherit}
 .rec-title{flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-weight:500}
 .rec-dur{font-family:var(--font-mono);font-size:10px;color:var(--t3);flex-shrink:0;font-weight:500}
 .rec-overdue{color:var(--c-red);font-weight:700;font-family:var(--font-mono);font-size:10px}
-.slot-empty{padding:5px 0;font-size:11.5px;color:var(--t3);font-style:italic;font-family:var(--font-mono);letter-spacing:-.01em;margin-left:32px}
+.slot-empty{padding:5px 0;font-size:11.5px;color:var(--t3);font-style:italic;font-family:var(--font-mono);letter-spacing:-.01em;margin-left:48px}
 .foot{margin-top:18px;padding-top:12px;display:flex;justify-content:space-between;align-items:center;font-family:var(--font-mono);font-size:10px;color:var(--t3);letter-spacing:.04em}
 .foot .acts{display:flex;gap:14px}
 .foot .acts a{color:var(--t2);cursor:pointer;text-decoration:none;transition:color 120ms}.foot .acts a:hover{color:var(--c-teal)}
@@ -191,11 +205,11 @@ button{font:inherit;cursor:pointer;border:none;background:none;color:inherit}
 .btn:hover{background:#000;transform:translateY(-1px);box-shadow:var(--shadow-md)}
 .btn.sec{background:var(--surface-2);color:var(--t1);border:1px solid var(--hair)}
 .btn.sec:hover{background:var(--surface);border-color:var(--hair-d);transform:translateY(-1px)}
-.btn.danger{background:var(--c-red)}.btn.danger:hover{background:#8B2438}
+.btn.danger{background:var(--c-red)}.btn.danger:hover{background:#9F1F44}
 .btn.right{margin-left:auto}
 .modal-msg{font-size:11.5px;color:var(--t2);margin-top:8px;padding:8px 12px;background:var(--surface-2);border-radius:6px;line-height:1.5;border:1px solid var(--hair)}
-.modal-msg.ok{color:var(--c-emr);background:var(--c-emr-s);border-color:#A8C9B6}
-.modal-msg.err{color:var(--c-red);background:var(--c-red-s);border-color:#E6BCC5}
+.modal-msg.ok{color:var(--c-emr);background:var(--c-emr-s);border-color:#A8C3F0}
+.modal-msg.err{color:var(--c-red);background:var(--c-red-s);border-color:#F4B7C9}
 .pri-chips{display:flex;gap:6px;flex-wrap:wrap}
 .pri-chip{padding:9px 16px;border-radius:8px;font-size:13px;font-weight:600;background:var(--surface-2);border:1.5px solid var(--hair);color:var(--t2);cursor:pointer;transition:all 120ms}
 .pri-chip:hover{background:var(--surface);border-color:var(--hair-d)}
@@ -336,6 +350,7 @@ const SEED={
   events:[
     {date:'2026-05-11',time:'10:00',title:'제조DX 영업회의',duration:90,type:'outlook',color:'event'},
     {date:'2026-05-11',time:'13:30',title:'DX본부 주간회의',duration:60,type:'outlook',color:'event'},
+    {date:'2026-05-11',time:'16:00',title:'KMG 인사팀 분석과제 인터뷰',duration:60,type:'outlook',color:'event'},
     {date:'2026-05-13',time:'14:00',title:'DX본부 주간회의',duration:60,type:'outlook',color:'event'},
     {date:'2026-05-14',time:'10:00',title:'KMG DX 교육 Day 1',duration:480,type:'outlook',color:'event'},
     {date:'2026-05-15',time:'10:00',title:'KMG DX 교육 Day 2',duration:480,type:'outlook',color:'event'},
@@ -409,10 +424,16 @@ function barClass(t){
   return 'bar-mute';
 }
 function dueDisplay(t){
-  const d=dayDiff(t.due,today());
-  if(d<0)return null;
+  if(!t.due)return null;
   const dt=new Date(t.due);
   return `${dt.getMonth()+1}.${dt.getDate()} 마감`;
+}
+function dueChipClass(t){
+  if(t.done)return 'normal';
+  if(dayDiff(t.due,today())<0)return 'overdue';
+  if(t.priority==='urgent')return 'urgent';
+  if(t.priority==='high')return 'high';
+  return 'normal';
 }
 function createdAtLabel(t){
   if(t.createdAt){
@@ -484,7 +505,7 @@ function renderTasks(){
 
 function taskHTML(t){
   const overdueDays=!t.done&&dayDiff(t.due,today())<0?Math.abs(dayDiff(t.due,today())):0;
-  const overdueBadge=overdueDays>0?`<span class="badge-overdue">${overdueDays}d 지연</span>`:'';
+  const overdueBadge=overdueDays>0?`<span class="overdue-mini">${overdueDays}d 지연</span>`:'';
   const dueLbl=dueDisplay(t);
   const created=createdAtLabel(t);
   return `<div class="tk ${barClass(t)}${t.done?' done':''}" data-id="${t.id}">
@@ -492,12 +513,11 @@ function taskHTML(t){
     <div class="tk-body">
       <div class="tk-title">${esc(t.title)}</div>
       <div class="tk-meta">
-        ${created?`<span class="created-chip">+ ${created}</span>`:''}
-        ${overdueBadge}
         <span class="${priClass(t.priority)}">${priLabel(t.priority)}</span>
         ${dueLbl?`<span class="dotsep">·</span><span class="info">${dueLbl}</span>`:''}
-        ${t.duration?`<span class="dotsep">·</span><span class="info">${t.duration}min</span>`:''}
+        ${overdueBadge}
         ${t.scheduled?`<span class="dotsep">·</span><span class="info">${t.scheduled} 배치</span>`:''}
+        ${created?`<span class="dotsep">·</span><span class="created-mini">작성 ${created}</span>`:''}
       </div>
     </div>
     <div class="tk-actions">
@@ -551,11 +571,20 @@ function renderDayPanel(){
       return a.due.localeCompare(b.due);
     });
 
-  const eventHours=new Set(evs.map(e=>parseInt(e.time.split(':')[0])));
+  const occupiedHours=new Set();
+  evs.forEach(e=>{
+    const [eh,em]=e.time.split(':').map(Number);
+    const dur=e.duration||60;
+    const startMin=eh*60+em;
+    const endMin=startMin+dur;
+    for(let m=startMin;m<endMin;m++){
+      occupiedHours.add(Math.floor(m/60));
+    }
+  });
   const slotRecs={};
   let taskIdx=0;
   for(let h=10;h<=17;h++){
-    if(eventHours.has(h))continue;
+    if(occupiedHours.has(h))continue;
     const slotKey=String(h).padStart(2,'0');
     slotRecs[slotKey]=[];
     let used=0;
@@ -592,8 +621,10 @@ function renderDayPanel(){
     const hourEvs=evs.filter(e=>parseInt(e.time.split(':')[0])===h);
     if(hourEvs.length>0){
       hourEvs.forEach(e=>{
-        slotsHTML.push(`<div class="slot"><span class="slot-t">${hourLabel}</span><div class="slot-c event"><span class="cnum">${hourLabel}</span><span>${esc(e.title)}</span></div></div>`);
+        slotsHTML.push(`<div class="slot"><span class="slot-t">${e.time}</span><div class="slot-c event"><span>${esc(e.title)}</span></div></div>`);
       });
+    }else if(occupiedHours.has(h)){
+      slotsHTML.push(`<div class="slot-empty">${hourLabel}:00 회의 진행 중</div>`);
     }else{
       const recs=slotRecs[hourLabel]||[];
       if(recs.length>0){
@@ -604,10 +635,9 @@ function renderDayPanel(){
             <span class="rec-pri ${priShort(t.priority)}"></span>
             <span class="rec-title">${esc(t.title)}</span>
             ${dueLbl}
-            <span class="rec-dur">${t.duration||30}m</span>
           </div>`;
         }).join('');
-        slotsHTML.push(`<div class="slot"><span class="slot-t">${hourLabel}</span><div class="slot-c rec">${recHTML}</div></div>`);
+        slotsHTML.push(`<div class="slot"><span class="slot-t">${hourLabel}:00</span><div class="slot-c rec">${recHTML}</div></div>`);
       }else{
         slotsHTML.push(`<div class="slot-empty">${hourLabel}:00 ${isPast?'지난 시간':'빈 시간'}</div>`);
       }
@@ -887,7 +917,7 @@ document.getElementById('btnSyncPush').addEventListener('click',async()=>{
     const json=JSON.stringify({tasks:state.tasks,events:state.events});
     const utf8=new TextEncoder().encode(json);
     let bin='';for(let i=0;i<utf8.length;i++)bin+=String.fromCharCode(utf8[i]);
-    const r=await fetch(WORKER_URL,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({secret:SHARED_SECRET,device:'pwa-v11',data:btoa(bin)})});
+    const r=await fetch(WORKER_URL,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({secret:SHARED_SECRET,device:'pwa-v17',data:btoa(bin)})});
     if(!r.ok)throw new Error(`HTTP ${r.status}`);
     showSyncMsg('✓ Gist로 전송됨','ok');
   }catch(e){showSyncMsg('❌ '+e.message,'err')}

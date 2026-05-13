@@ -4,7 +4,7 @@
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 <meta name="theme-color" content="#F5F7FA" />
-<title>Sir's Tasks · v19</title>
+<title>Sir's Tasks · v20</title>
 <link href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable.min.css" rel="stylesheet">
 <style>
 :root{
@@ -155,6 +155,8 @@ button{font:inherit;cursor:pointer;border:none;background:none;color:inherit}
 .allday-bar{display:flex;flex-wrap:wrap;gap:6px;padding:7px 10px;background:var(--c-emr-s);border:1px solid #C7D2FE;border-radius:8px;margin-bottom:10px;align-items:center}
 .allday-bar .label{font-family:var(--font-mono);font-size:9.5px;font-weight:600;color:var(--c-emr);letter-spacing:.12em;text-transform:uppercase;margin-right:2px}
 .allday-chip{display:inline-flex;align-items:center;padding:2px 8px;background:var(--surface);border-radius:4px;color:var(--c-emr);font-weight:600;font-size:11.5px;border:1px solid #C7D2FE;letter-spacing:-.005em}
+.slot.slot-allday .slot-t{color:var(--c-emr);font-family:var(--font-mono);font-size:10px;font-weight:700;letter-spacing:.08em;padding-top:8px}
+.slot.slot-allday .slot-c{background:var(--c-emr-s);border-left:3px solid var(--c-emr);color:#3730A3;font-weight:600;padding-left:11px}
 .cap-row .r .seg{display:inline-flex;align-items:center;gap:3px}
 .cap-row .r .seg::before{content:'';width:8px;height:8px;border-radius:2px;display:inline-block}
 .cap-row .r .seg.busy::before{background:var(--c-emr)}
@@ -625,6 +627,9 @@ function renderDayPanel(){
   const freePct=Math.max(0,100-busyPct-recPct);
 
   const slotsHTML=[];
+  alldayEvs.forEach(e=>{
+    slotsHTML.push(`<div class="slot slot-allday"><span class="slot-t">종일</span><div class="slot-c"><span>${esc(e.title)}</span></div></div>`);
+  });
   for(let h=9;h<=18;h++){
     const hourLabel=String(h).padStart(2,'0');
     const hourEvs=timedEvs.filter(e=>parseInt(e.time.split(':')[0])===h);
@@ -657,10 +662,6 @@ function renderDayPanel(){
   const dayLabelHTML=`<span class="day-label ${dCls}">${dLabel}</span>`;
   const headerLabel=isPast?'PAST':(isToday?'TODAY':'PLANNING');
 
-  const alldayHTML=alldayEvs.length>0
-    ?`<div class="allday-bar"><span class="label">종일</span>${alldayEvs.map(e=>`<span class="allday-chip">${esc(e.title)}</span>`).join('')}</div>`
-    :'';
-
   document.getElementById('todayPanel').innerHTML=`
     <div class="today-h">
       <div class="today-h-l"><span class="ic">⏰</span><span class="lbl">${headerLabel}</span></div>
@@ -672,7 +673,6 @@ function renderDayPanel(){
       <div class="day-strip">${stripHTML.join('')}</div>
       <button class="day-arrow" id="nextWeek" title="다음 주">›</button>
     </div>
-    ${alldayHTML}
     <div class="cap-row">
       <span class="l">가용 ${(totalMin/60).toFixed(0)}h</span>
       <span class="r">
@@ -832,10 +832,15 @@ function parseICS(text){
     else if(line==='END:VEVENT'&&cur){if(cur.dtstart)events.push(cur);cur=null}
     else if(cur){
       const idx=line.indexOf(':');if(idx<=0)continue;
-      const key=line.substring(0,idx).split(';')[0];
+      const rawKey=line.substring(0,idx);
+      const key=rawKey.split(';')[0];
+      const params=rawKey.split(';').slice(1);
       const val=line.substring(idx+1);
       if(key==='SUMMARY')cur.summary=val.replace(/\\,/g,',').replace(/\\n/g,' ');
-      else if(key==='DTSTART')cur.dtstart=parseICSDate(val);
+      else if(key==='DTSTART'){
+        cur.dtstart=parseICSDate(val);
+        if(params.some(p=>p.toUpperCase().includes('VALUE=DATE'))||/^\d{8}$/.test(val))cur.isAllDay=true;
+      }
       else if(key==='DTEND')cur.dtend=parseICSDate(val);
       else if(key==='UID')cur.uid=val;
     }
@@ -845,6 +850,9 @@ function parseICS(text){
 function icsToEvents(icsEvents){
   return icsEvents.map(e=>{
     const start=e.dtstart;
+    if(e.isAllDay){
+      return {date:fmtDate(start),time:'00:00',title:e.summary||'(제목 없음)',duration:0,type:'outlook',color:'event',isAllDay:true};
+    }
     const end=e.dtend||new Date(start.getTime()+60*60*1000);
     const dur=Math.max(15,Math.round((end-start)/60000));
     return {date:fmtDate(start),time:`${String(start.getHours()).padStart(2,'0')}:${String(start.getMinutes()).padStart(2,'0')}`,title:e.summary||'(제목 없음)',duration:dur,type:'outlook',color:'event'};

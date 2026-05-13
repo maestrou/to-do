@@ -4,7 +4,7 @@
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 <meta name="theme-color" content="#F5F7FA" />
-<title>Sir's Tasks · v24</title>
+<title>Sir's Tasks · v25</title>
 <link href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable.min.css" rel="stylesheet">
 <style>
 :root{
@@ -81,6 +81,11 @@ button{font:inherit;cursor:pointer;border:none;background:none;color:inherit}
 .grp.week .dot{background:var(--c-saf)}.grp.week .lbl{color:var(--c-saf)}
 .grp.later .dot,.grp.done .dot{background:var(--hair-d)}
 .grp.later .lbl,.grp.done .lbl{color:var(--t3)}
+.grp-tasks-scroll{max-height:200px;overflow-y:auto;scrollbar-width:thin;scrollbar-color:var(--hair-d) transparent;border-radius:0 0 8px 8px}
+.grp-tasks-scroll::-webkit-scrollbar{width:6px}
+.grp-tasks-scroll::-webkit-scrollbar-track{background:transparent}
+.grp-tasks-scroll::-webkit-scrollbar-thumb{background:var(--hair-d);border-radius:3px;opacity:.5}
+.grp-tasks-scroll::-webkit-scrollbar-thumb:hover{background:var(--t3)}
 .tk{display:grid;grid-template-columns:18px 1fr auto;gap:14px;align-items:start;padding:13px 14px 13px 18px;border-bottom:1px solid var(--hair-soft);position:relative;cursor:pointer;transition:background 120ms}
 .tk:last-child{border-bottom:none}.tk:hover{background:var(--surface-2)}
 .tk::before{content:'';position:absolute;left:0;top:8px;bottom:8px;width:2px;border-radius:2px;background:transparent}
@@ -520,7 +525,11 @@ function renderTasks(){
   const order=['overdue','today','week','later','done'];
   const html=order.filter(k=>groups[k].tasks.length>0).map(k=>{
     const g=groups[k];
-    return `<div class="grp ${g.cls}"><div class="grp-h"><span class="dot"></span><span class="lbl">${g.lbl}</span><span class="cnt">${g.tasks.length}</span></div>${g.tasks.map(taskHTML).join('')}</div>`;
+    const tasksHTML=g.tasks.map(taskHTML).join('');
+    if(k==='done'){
+      return `<div class="grp ${g.cls}"><div class="grp-h"><span class="dot"></span><span class="lbl">${g.lbl}</span><span class="cnt">${g.tasks.length}</span></div><div class="grp-tasks-scroll">${tasksHTML}</div></div>`;
+    }
+    return `<div class="grp ${g.cls}"><div class="grp-h"><span class="dot"></span><span class="lbl">${g.lbl}</span><span class="cnt">${g.tasks.length}</span></div>${tasksHTML}</div>`;
   }).join('');
   document.getElementById('taskList').innerHTML=html||`<div class="empty"><div class="empty-i">∅</div>표시할 항목이 없습니다</div>`;
   document.querySelectorAll('.tk').forEach(el=>{

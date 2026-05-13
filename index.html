@@ -4,7 +4,7 @@
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 <meta name="theme-color" content="#F5F7FA" />
-<title>Sir's Tasks · v23</title>
+<title>Sir's Tasks · v24</title>
 <link href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable.min.css" rel="stylesheet">
 <style>
 :root{
@@ -396,18 +396,11 @@ function load(){
     if(!raw)return structuredClone(SEED);
     const p=JSON.parse(raw);
     if(!p.tasks)p.tasks=[];if(!p.events)p.events=[];
-    // SEED outlook events auto-merge: localStorage에 없는 신규 outlook 일정만 추가
-    const evKey=e=>`${e.date}|${e.time}|${e.title}`;
-    const existingKeys=new Set(p.events.map(evKey));
-    let mergedCount=0;
-    SEED.events.filter(e=>e.type==='outlook').forEach(e=>{
-      if(!existingKeys.has(evKey(e))){
-        p.events.push(structuredClone(e));
-        mergedCount++;
-      }
-    });
-    if(mergedCount>0){
-      console.log(`[auto-merge] ${mergedCount}건 신규 outlook 일정 병합`);
+    const result=mergeSeedOutlook(p.events);
+    p.events=result.events;
+    if(result.added>0){
+      console.log(`[auto-merge:load] ${result.added}건 신규 outlook 일정 병합`);
+      p._needsPush=true;
     }
     return p;
   }catch(e){return structuredClone(SEED)}
@@ -1029,6 +1022,21 @@ function applyHashSync(){
   }catch(e){console.warn('hash sync failed',e)}
 }
 
+/* ─── SEED outlook events auto-merge (load + pull 양쪽 적용) ─── */
+function mergeSeedOutlook(events){
+  if(!events)events=[];
+  const evKey=e=>`${e.date}|${e.time}|${e.title}`;
+  const existingKeys=new Set(events.map(evKey));
+  let added=0;
+  SEED.events.filter(e=>e.type==='outlook').forEach(e=>{
+    if(!existingKeys.has(evKey(e))){
+      events.push(structuredClone(e));
+      added++;
+    }
+  });
+  return {events, added};
+}
+
 /* ─── 자동 양방향 Gist sync ─── */
 const DEVICE_ID = (()=>{
   let id = localStorage.getItem('sir-device-id');
@@ -1059,6 +1067,14 @@ async function autoPullFromGist(){
     if(!r.ok) return;
     const data = await r.json();
     if(!data || (!data.tasks && !data.events)) return;
+    // Pull 받은 events에도 SEED outlook merge 적용 (옛 데이터 덮어씌움 방지)
+    if(data.events){
+      const result = mergeSeedOutlook(data.events);
+      data.events = result.events;
+      if(result.added > 0){
+        console.log(`[auto-merge:pull] ${result.added}건 SEED outlook 보완`);
+      }
+    }
     const remoteHash = dataHash(data);
     if(remoteHash === lastRemoteHash) return;
     const localHash = dataHash(state);
@@ -1069,6 +1085,8 @@ async function autoPullFromGist(){
       localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
       render();
       flash('🔄 다른 기기에서 갱신됨');
+      // 다른 디바이스도 빨리 갱신받게 push
+      autoPushToGist();
     }
     lastRemoteHash = remoteHash;
   }catch(e){
@@ -1101,6 +1119,12 @@ function autoPushToGist(){
 }
 
 applyHashSync();
+// load() auto-merge로 추가된 일정이 있으면 즉시 push (다른 디바이스 동기화)
+if(state._needsPush){
+  delete state._needsPush;
+  localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
+  autoPushToGist();
+}
 autoPullFromGist();
 setInterval(autoPullFromGist, 30000);
 render();

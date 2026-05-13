@@ -4,7 +4,7 @@
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 <meta name="theme-color" content="#F5F7FA" />
-<title>Sir's Tasks · v21</title>
+<title>Sir's Tasks · v22</title>
 <link href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable.min.css" rel="stylesheet">
 <style>
 :root{
@@ -574,14 +574,24 @@ function renderDayPanel(){
   const isAlldayEv=e=>e.isAllDay||(e.duration||0)>=1440;
   const alldayEvs=evs.filter(isAlldayEv);
   const timedEvs=evs.filter(e=>!isAlldayEv(e));
+  const hasAllday=alldayEvs.length>0;
 
-  const todoPool=isPast ? [] : state.tasks
+  const todoPool=(isPast||hasAllday) ? [] : state.tasks
     .filter(t=>!t.done)
+    .map(t=>({
+      task:t,
+      overdueDays:Math.max(0,-dayDiff(t.due,today())),
+      priWeight:PRI_ORDER[t.priority]||99
+    }))
     .sort((a,b)=>{
-      const pdiff=PRI_ORDER[a.priority]-PRI_ORDER[b.priority];
-      if(pdiff!==0)return pdiff;
-      return a.due.localeCompare(b.due);
-    });
+      // 1차: 지연일 큰 순서 (overdue 우선)
+      if(a.overdueDays!==b.overdueDays)return b.overdueDays-a.overdueDays;
+      // 2차: 중요도 (urgent > high > normal)
+      if(a.priWeight!==b.priWeight)return a.priWeight-b.priWeight;
+      // 3차: 마감일 빠른 순
+      return a.task.due.localeCompare(b.task.due);
+    })
+    .map(x=>x.task);
 
   const occupiedHours=new Set();
   timedEvs.forEach(e=>{
@@ -598,29 +608,18 @@ function renderDayPanel(){
   for(let h=9;h<=18;h++){
     if(occupiedHours.has(h))continue;
     const slotKey=String(h).padStart(2,'0');
-    slotRecs[slotKey]=[];
-    let used=0;
-    while(taskIdx<todoPool.length){
-      const t=todoPool[taskIdx];
-      const d=t.duration||30;
-      if(used+d<=60){
-        slotRecs[slotKey].push(t);
-        used+=d;
-        taskIdx++;
-      }else if(used===0&&d>60){
-        slotRecs[slotKey].push(t);
-        used+=d;
-        taskIdx++;
-        break;
-      }else{
-        break;
-      }
+    // 1시간 = 1 task 배치
+    if(taskIdx<todoPool.length){
+      slotRecs[slotKey]=[todoPool[taskIdx]];
+      taskIdx++;
+    }else{
+      slotRecs[slotKey]=[];
     }
   }
 
   let busyMin=0;
   timedEvs.forEach(e=>{busyMin+=e.duration||60});
-  const recMin=Object.values(slotRecs).reduce((s,arr)=>s+arr.reduce((ss,t)=>ss+(t.duration||30),0),0);
+  const recMin=Object.values(slotRecs).reduce((s,arr)=>s+arr.length*60,0);
   const totalMin=10*60;
   const freeMin=Math.max(0,totalMin-busyMin-recMin);
   const busyPct=Math.min(100,(busyMin/totalMin)*100);

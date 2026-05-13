@@ -4,7 +4,7 @@
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 <meta name="theme-color" content="#F5F7FA" />
-<title>Sir's Tasks · v22</title>
+<title>Sir's Tasks · v23</title>
 <link href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable.min.css" rel="stylesheet">
 <style>
 :root{
@@ -367,7 +367,20 @@ const SEED={
     // 5/14 (목)
     {date:'2026-05-14',time:'00:00',title:'주차장 결제',duration:0,type:'outlook',color:'event',isAllDay:true},
     {date:'2026-05-14',time:'00:00',title:'KGI 출장',duration:0,type:'outlook',color:'event',isAllDay:true},
-    {date:'2026-05-14',time:'17:00',title:'저녁',duration:120,type:'outlook',color:'event'}
+    {date:'2026-05-14',time:'17:00',title:'저녁',duration:120,type:'outlook',color:'event'},
+    // 5/18 (월)
+    {date:'2026-05-18',time:'10:00',title:'DX본부 주간회의',duration:60,type:'outlook',color:'event'},
+    {date:'2026-05-18',time:'10:30',title:'제조DX 영업회의',duration:90,type:'outlook',color:'event'},
+    // 5/19 (화)
+    {date:'2026-05-19',time:'00:00',title:'KMG M T/F 주간보고 자료 작성',duration:0,type:'outlook',color:'event',isAllDay:true},
+    {date:'2026-05-19',time:'13:00',title:'[공유] 김천2공장 AP',duration:60,type:'outlook',color:'event'},
+    {date:'2026-05-19',time:'14:00',title:'SAS 대구 제조 세미나',duration:120,type:'outlook',color:'event'},
+    // 5/25 (월) - 부처님오신날 대체 휴일
+    {date:'2026-05-25',time:'00:00',title:'부처님오신날 (대체 휴일)',duration:0,type:'outlook',color:'event',isAllDay:true},
+    {date:'2026-05-25',time:'10:30',title:'제조DX 영업회의',duration:90,type:'outlook',color:'event'},
+    {date:'2026-05-25',time:'13:30',title:'DX본부 주간회의',duration:60,type:'outlook',color:'event'},
+    // 5/26 (화)
+    {date:'2026-05-26',time:'00:00',title:'KMG M T/F 주간보고 자료 작성',duration:0,type:'outlook',color:'event',isAllDay:true}
   ],
   lastSync:''
 };
@@ -383,6 +396,19 @@ function load(){
     if(!raw)return structuredClone(SEED);
     const p=JSON.parse(raw);
     if(!p.tasks)p.tasks=[];if(!p.events)p.events=[];
+    // SEED outlook events auto-merge: localStorage에 없는 신규 outlook 일정만 추가
+    const evKey=e=>`${e.date}|${e.time}|${e.title}`;
+    const existingKeys=new Set(p.events.map(evKey));
+    let mergedCount=0;
+    SEED.events.filter(e=>e.type==='outlook').forEach(e=>{
+      if(!existingKeys.has(evKey(e))){
+        p.events.push(structuredClone(e));
+        mergedCount++;
+      }
+    });
+    if(mergedCount>0){
+      console.log(`[auto-merge] ${mergedCount}건 신규 outlook 일정 병합`);
+    }
     return p;
   }catch(e){return structuredClone(SEED)}
 }

@@ -4,7 +4,7 @@
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 <meta name="theme-color" content="#F5F7FA" />
-<title>Sir's Tasks · v20</title>
+<title>Sir's Tasks · v21</title>
 <link href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable.min.css" rel="stylesheet">
 <style>
 :root{
@@ -571,8 +571,9 @@ function renderDayPanel(){
   }
 
   const evs=state.events.filter(e=>e.date===active).sort((a,b)=>a.time.localeCompare(b.time));
-  const alldayEvs=evs.filter(e=>e.isAllDay);
-  const timedEvs=evs.filter(e=>!e.isAllDay);
+  const isAlldayEv=e=>e.isAllDay||(e.duration||0)>=1440;
+  const alldayEvs=evs.filter(isAlldayEv);
+  const timedEvs=evs.filter(e=>!isAlldayEv(e));
 
   const todoPool=isPast ? [] : state.tasks
     .filter(t=>!t.done)
@@ -630,6 +631,11 @@ function renderDayPanel(){
   alldayEvs.forEach(e=>{
     slotsHTML.push(`<div class="slot slot-allday"><span class="slot-t">종일</span><div class="slot-c"><span>${esc(e.title)}</span></div></div>`);
   });
+  // 9시 미만 시작 일정
+  const earlyEvs=timedEvs.filter(e=>parseInt(e.time.split(':')[0])<9);
+  earlyEvs.forEach(e=>{
+    slotsHTML.push(`<div class="slot"><span class="slot-t">${e.time}</span><div class="slot-c event"><span>${esc(e.title)}</span></div></div>`);
+  });
   for(let h=9;h<=18;h++){
     const hourLabel=String(h).padStart(2,'0');
     const hourEvs=timedEvs.filter(e=>parseInt(e.time.split(':')[0])===h);
@@ -657,6 +663,12 @@ function renderDayPanel(){
       }
     }
   }
+
+  // 18시 초과 시작 일정
+  const lateEvs=timedEvs.filter(e=>parseInt(e.time.split(':')[0])>18);
+  lateEvs.forEach(e=>{
+    slotsHTML.push(`<div class="slot"><span class="slot-t">${e.time}</span><div class="slot-c event"><span>${esc(e.title)}</span></div></div>`);
+  });
 
   const dowKR=weekdayKR[dt.getDay()];
   const dayLabelHTML=`<span class="day-label ${dCls}">${dLabel}</span>`;
@@ -855,6 +867,13 @@ function icsToEvents(icsEvents){
     }
     const end=e.dtend||new Date(start.getTime()+60*60*1000);
     const dur=Math.max(15,Math.round((end-start)/60000));
+    // 자동 종일 감지: 00:00 시작 + 24h 배수 또는 dtend도 00:00
+    const startsAtMidnight=start.getHours()===0&&start.getMinutes()===0;
+    const endsAtMidnight=end.getHours()===0&&end.getMinutes()===0;
+    const isAlldayAuto=startsAtMidnight&&(dur>=1440||(endsAtMidnight&&dur%1440===0));
+    if(isAlldayAuto){
+      return {date:fmtDate(start),time:'00:00',title:e.summary||'(제목 없음)',duration:0,type:'outlook',color:'event',isAllDay:true};
+    }
     return {date:fmtDate(start),time:`${String(start.getHours()).padStart(2,'0')}:${String(start.getMinutes()).padStart(2,'0')}`,title:e.summary||'(제목 없음)',duration:dur,type:'outlook',color:'event'};
   });
 }

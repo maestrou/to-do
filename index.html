@@ -4,7 +4,7 @@
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 <meta name="theme-color" content="#F5F7FA" />
-<title>Sir's Tasks · v25</title>
+<title>Sir's Tasks · v26</title>
 <link href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable.min.css" rel="stylesheet">
 <style>
 :root{
@@ -994,7 +994,7 @@ document.getElementById('btnReseed').addEventListener('click',()=>{if(confirm('�
 document.getElementById('btnNuke').addEventListener('click',()=>{if(confirm('모든 데이터 삭제?')){state={tasks:[],events:[],lastSync:''};save();flash('전체 삭제됨')}});
 document.getElementById('btnSync').addEventListener('click',()=>{
   const u=localStorage.getItem(ICS_URL_KEY);
-  if(u){importICSFromUrl(u).then(()=>flash('캘린더 동기화'))}
+  if(u){autoSyncICS(false)}
   else{modal.classList.add('on');flash('먼저 ICS URL을 등록하세요')}
 });
 
@@ -1136,6 +1136,35 @@ if(state._needsPush){
 }
 autoPullFromGist();
 setInterval(autoPullFromGist, 30000);
+
+// 자동 ICS sync — 페이지 로드 시 즉시 + 5분마다
+async function autoSyncICS(silent){
+  const url=localStorage.getItem(ICS_URL_KEY);
+  if(!url)return;
+  try{
+    const text=await fetchICS(url);
+    const parsed=parseICS(text);
+    const newEvents=icsToEvents(parsed);
+    if(!newEvents.length)return;
+    // outlook type events만 교체 (수동 추가 일정 보존)
+    const manualEvents=state.events.filter(e=>e.type!=='outlook');
+    const merged=[...manualEvents,...newEvents];
+    // SEED outlook도 보완 (auto-merge)
+    const result=mergeSeedOutlook(merged);
+    state.events=result.events;
+    state.lastSync=new Date().toISOString();
+    localStorage.setItem(STORAGE_KEY,JSON.stringify(state));
+    render();
+    autoPushToGist();
+    if(!silent)flash(`📅 ICS sync ${newEvents.length}건`);
+    console.log(`[auto-ics] ${newEvents.length}건 outlook 일정 동기화`);
+  }catch(e){
+    console.warn('[auto-ics] failed:',e.message);
+  }
+}
+autoSyncICS(true);
+setInterval(()=>autoSyncICS(true),5*60*1000);
+
 render();
 setInterval(renderTopDate,60000);
 </script>
